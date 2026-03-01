@@ -1,4 +1,5 @@
 from .base import *
+import pandas as pd
 
 def statisticsListSearch(lrgDiv: str, smlDiv:str):
     api_key = API.get_api_key()

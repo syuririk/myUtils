@@ -1,4 +1,5 @@
 from .base import *
+import pandas as pd
 
 def statisticsInfoSearch(financeCd: str, listNo: str, accountCd: str, term: str, startBaseMm:str, endBaseMm: str):
     api_key = API.get_api_key()

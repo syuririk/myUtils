@@ -1,4 +1,5 @@
 from .base import *
+import pandas as pd
 
 def companySearch(partDiv: str):
     api_key = API.get_api_key()
