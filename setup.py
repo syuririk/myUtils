@@ -3,6 +3,7 @@ import pathlib
 
 here = pathlib.Path(__file__).parent.resolve()
 
+# requirements.txt 읽기
 req_path = here / "requirements.txt"
 requirements = []
 if req_path.exists():
@@ -11,15 +12,15 @@ if req_path.exists():
 
 setup(
     name="myUtils",
-    version="0.1.0",
+    version="0.1.1",
     
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     
     include_package_data=True,
     install_requires=requirements,
+    python_requires=">=3.8",
     description="My utils",
     long_description=(here / "README.md").read_text(encoding="utf-8") if (here / "README.md").exists() else "",
     long_description_content_type="text/markdown",
-    python_requires=">=3.8",
 )
