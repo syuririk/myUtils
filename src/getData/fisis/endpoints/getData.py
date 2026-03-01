@@ -19,4 +19,5 @@ def getData(codes, start_date, end_date):
     data = c_statInfo_to_df(data)
     dfs.append(data)
 
-  pd.concat(dfs, axis=1)
+  df = pd.concat(dfs, axis=1)
+  return df
