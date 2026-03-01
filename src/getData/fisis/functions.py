@@ -1,8 +1,5 @@
-from fisis.services.statistics_list_service import accountListSearch, companySearch, statisticsInfoSearch, statisticsListSearch
-from accountListSearch import accountListSearch
-from companySearch import companySearch
-from statisticsInfoSearch import statisticsInfoSearch
-from statisticsListSearch import statisticsListSearch
+from .services import accountListSearch, companySearch, statisticsInfoSearch, statisticsListSearch
+
 
 def searchCompany(keyword, type_val:str):
     return companySearch(keyword)
