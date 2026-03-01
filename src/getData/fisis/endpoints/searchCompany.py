@@ -1,5 +1,5 @@
 from getData.fisis.services.companySearch import companySearch
-import pd
+import pandas as pd
 
 def searchCompany(div):
   '''
