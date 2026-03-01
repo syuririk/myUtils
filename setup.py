@@ -21,7 +21,7 @@ setup(
     include_package_data=True,
     install_requires=requirements,
 
-    description="utils",
+    description="My utils",
     long_description=(here / "README.md").read_text(encoding="utf-8")
         if (here / "README.md").exists() else "",
     long_description_content_type="text/markdown",
