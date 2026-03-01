@@ -2,7 +2,7 @@ from getData.fisis.services.statisticsListSearch import statisticsListSearch
 from getData.fisis.services.accountListSearch import accountListSearch
 import pandas as pd
 
-def searchStats(lrgDiv: str, smlDiv:str):
+def searchStats(lrgDiv: str, smlDiv: str, details = True):
   '''
   - A: 국내은행       -> [A:일반현황, B:재무현황, C:주요경영지표, D:주요영업활동, P:보도자료통계]
   - J: 외은지점       -> [A:일반현황, B:재무현황, C:주요경영지표, P:보도자료통계]
@@ -27,11 +27,15 @@ def searchStats(lrgDiv: str, smlDiv:str):
   - B: 공통(신탁)     -> [A:신탁회사현황, B:은행, C:증권, D:보험, E:부동산신탁, F:신탁보수]
   - R: 공통(파생상품) -> [A:총괄(신탁제외), B:신탁]
   '''
-  datas = statisticsListSearch(lrgDiv=lrgDiv, smlDiv=smlDiv)
-  stat_code_list = list(datas['list_no'])
-  stat_name_list = list(datas['list_nm'])
-  dfs = []
-  for i in range(len(stat_code_list)):
-    dfs.append(accountListSearch(listNo=stat_code_list[i]))
-  result = pd.concat(dfs)
-  return result[['list_no', 'account_cd', 'list_nm', 'account_nm']]
+  if details:
+    datas = statisticsListSearch(lrgDiv=lrgDiv, smlDiv=smlDiv)
+    stat_code_list = list(datas['list_no'])
+    stat_name_list = list(datas['list_nm'])
+    dfs = []
+    for i in range(len(stat_code_list)):
+      dfs.append(accountListSearch(listNo=stat_code_list[i]))
+    result = pd.concat(dfs)[['list_no', 'account_cd', 'list_nm', 'account_nm']]
+
+  else:
+    result = statisticsListSearch(lrgDiv=lrgDiv, smlDiv=smlDiv)
+  return result
