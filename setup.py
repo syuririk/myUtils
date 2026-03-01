@@ -11,7 +11,7 @@ with open(here / "requirements.txt") as f:
     ]
 
 
-package_names = ["getData", "processData"]
+package_names = ["src"]
 package_path = [n + ".*" for n in package_names]
 
 setup(
