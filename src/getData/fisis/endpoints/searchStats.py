@@ -1,36 +1,6 @@
 from .services.statisticsListSearch import statisticsListSearch
 from .services.accountListSearch import accountListSearch
-from .services.statisticsInfoSearch import statisticsInfoSearch
-from .services.companySearch import companySearch
-from .process.convertData import c_statInfo_to_df
-from .utils.api import API
-
-def searchCompany(div, type_val:str):
-  '''
-  A : 국내은행
-  J : 외은지점
-  H : 생명보험
-  I : 손해보험
-  F : 투자매매중개업자Ⅰ
-  W : 투자매매중개업자Ⅱ
-  G : 집합투자업자
-  X : 투자자문일임업자
-  D : 종합금융회사
-  C : 신용카드사
-  K : 리스사
-  T : 할부금융사
-  N : 신기술금융사
-  E : 상호저축은행
-  O : 신용협동조합
-  Q : 농업협동조합
-  P : 수산업협동조합
-  S : 산림조합
-  M : 부동산신탁
-  L : 금융지주회사
-  B : 공통(신탁)
-  R : 공통(파생상품)
-  '''
-  return companySearch(div)
+import pandas as pd
 
 def searchStats(lrgDiv: str, smlDiv:str):
   '''
@@ -65,23 +35,3 @@ def searchStats(lrgDiv: str, smlDiv:str):
     dfs.append(accountListSearch(listNo=stat_code_list[i]))
   result = pd.concat(dfs)
   return result[['list_no', 'account_cd', 'list_nm', 'account_nm']]
-
-
-def getData(codes, start_date, end_date):
-  dfs = []
-  for code in codes:
-    code[0] = financeCd
-    code[1] = listNo
-    code[2] = accountCd
-    code[3] = term
-    data = statisticsInfoSearch(financeCd= financeCd, 
-                              listNo= listNo, 
-                              accountCd= accountCd, 
-                              term= term, 
-                              startBaseMm= start_date, 
-                              endBaseMm= end_date)
-    dfs.appned(data)
-  pd.concat(dfs, axis=1)
-
-def setApiKey(key: str):
-  API.set_api_key(key)
