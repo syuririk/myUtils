@@ -2,7 +2,7 @@ from getData.fisis.services.statisticsListSearch import statisticsListSearch
 from getData.fisis.services.accountListSearch import accountListSearch
 import pandas as pd
 
-def searchStats(lrgDiv: str, smlDiv: str, details = True):
+def searchStats(lrgDiv: str, smlDiv: str, details = False):
   '''
   - A: 국내은행       -> [A:일반현황, B:재무현황, C:주요경영지표, D:주요영업활동, P:보도자료통계]
   - J: 외은지점       -> [A:일반현황, B:재무현황, C:주요경영지표, P:보도자료통계]
