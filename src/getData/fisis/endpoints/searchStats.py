@@ -1,5 +1,5 @@
-from .services.statisticsListSearch import statisticsListSearch
-from .services.accountListSearch import accountListSearch
+from getData.fisis.services.statisticsListSearch import statisticsListSearch
+from getData.fisis.services.accountListSearch import accountListSearch
 import pandas as pd
 
 def searchStats(lrgDiv: str, smlDiv:str):

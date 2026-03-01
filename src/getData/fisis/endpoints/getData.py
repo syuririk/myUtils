@@ -1,4 +1,4 @@
-from .services.statisticsInfoSearch import statisticsInfoSearch
+from getData.fisis.services.statisticsInfoSearch import statisticsInfoSearch
 
 import pandas as pd
 
