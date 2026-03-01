@@ -1,7 +1,6 @@
-from fisis.utils.request import getRequest
-from fisis.utils.api import API
+from .base import *
 
-def getStatList(partDiv: str):
+def companySearch(partDiv: str):
     '''
 
     A : 국내은행
@@ -31,5 +30,7 @@ def getStatList(partDiv: str):
     '''
     api_key = API.get_api_key()
 
-    url = 'http://fisis.fss.or.kr/openapi/companySearch.json?auth={api_key}&partDiv={partDiv}&lang=kr'
-    getRequest()
+    url = f'http://fisis.fss.or.kr/openapi/companySearch.json?auth={api_key}&partDiv={partDiv}&lang=kr'
+    data = getRequest(url).get('result').get('list')
+    df = pd.DataFrame(data)
+    return df
