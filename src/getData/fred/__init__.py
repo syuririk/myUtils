@@ -6,5 +6,5 @@ from .endpoints.setApiKey import setApiKey
 from .services.category import category
 
 __all__ = [
-    'searchCategory', 'category', 'setApiKey', 'searchTags'
+    'searchCategory', 'setApiKey', 'searchTags'
 ]
