@@ -1,5 +1,5 @@
-from .functions import searchCompany, searchStats
+from .functions import searchCompany, searchStats, getData
 
 __all__ = [
-    'searchCompany', 'searchStats'
+    'searchCompany', 'searchStats', 'getData'
 ]

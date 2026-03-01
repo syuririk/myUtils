@@ -79,4 +79,5 @@ def getData(codes, start_date, end_date):
                               term= term, 
                               startBaseMm= start_date, 
                               endBaseMm= end_date)
-    
+    dfs.appned(data)
+  pd.concat(dfs, axis=1)
