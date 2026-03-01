@@ -1,5 +1,5 @@
-from .services import accountListSearch, companySearch, statisticsInfoSearch, statisticsListSearch
-
+from .services import *
+from .process import *
 
 def searchCompany(keyword, type_val:str):
     return companySearch(keyword)
