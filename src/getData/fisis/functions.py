@@ -3,6 +3,7 @@ from .services.accountListSearch import accountListSearch
 from .services.statisticsInfoSearch import statisticsInfoSearch
 from .services.companySearch import companySearch
 from .process.convertData import c_statInfo_to_df
+from .utils.api import API
 
 def searchCompany(div, type_val:str):
   '''
@@ -81,3 +82,6 @@ def getData(codes, start_date, end_date):
                               endBaseMm= end_date)
     dfs.appned(data)
   pd.concat(dfs, axis=1)
+
+def setApiKey(key: str):
+  API.set_api_key(key)
