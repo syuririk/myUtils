@@ -7,7 +7,7 @@ def searchSeries(val_id :str, method='category'):
         data = categorySeries(val_id)
         return pd.DataFrame(data)
 
-    elif: method == 'tag'
+    elif method == 'tag':
         data = tagsSeries(val_id)
         return pd.DataFrame(data)
 
