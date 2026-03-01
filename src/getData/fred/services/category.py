@@ -6,7 +6,7 @@ def category(category_id):
     result = getRequest(url)
 
     try:
-        result = data.get('categories')[0]
+        result = result.get('categories')[0]
         result['children'] = children(category_id)
     except:
         result = data
