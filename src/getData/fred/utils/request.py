@@ -16,7 +16,7 @@ ERR_DICT = {
     "900": "정의되지 않은 오류"
 }
 
-class FisisAPIError(Exception):
+class FredAPIError(Exception):
     pass
 
 
@@ -28,16 +28,18 @@ def getRequest(url, print_url=True):
     res = requests.get(url)
 
     if res.status_code != 200:
-        raise FisisAPIError(f"HTTP Error: {res.status_code}")
+        raise FredAPIError(f"HTTP 오류: {res.status_code}")
 
     data = res.json()
 
-    result = data.get("result", {})
-    err_cd = result.get("err_cd")
+    # result = data.get("result", {})
+    # err_cd = result.get("err_cd")
 
-    if err_cd != "000":
-        msg = ERR_DICT.get(err_cd, "API Error")
-        raise FisisAPIError(f"[{err_cd}] {msg}")
+    # if err_cd != "000":
+    #     msg = ERR_DICT.get(err_cd, "알 수 없는 오류")
+    #     raise FisisAPIError(f"[{err_cd}] {msg}")
 
     return data
+
+
 

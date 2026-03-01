@@ -1,5 +1,4 @@
 from .base import *
-import pandas as pd
 
 def accountListSearch(listNo: str):
     '''
@@ -9,5 +8,4 @@ def accountListSearch(listNo: str):
     
     url = f'http://fisis.fss.or.kr/openapi/accountListSearch.json?auth={api_key}&listNo={listNo}&lang=kr'
     data = getRequest(url).get('result').get('list')
-    df = pd.DataFrame(data)
-    return df
+    return data

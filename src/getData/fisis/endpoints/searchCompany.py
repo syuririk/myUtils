@@ -26,4 +26,6 @@ def searchCompany(div):
   B : 공통(신탁)
   R : 공통(파생상품)
   '''
-  return companySearch(div)
+  data = companySearch(div)
+  result = pd.DataFrame(data)
+  return result

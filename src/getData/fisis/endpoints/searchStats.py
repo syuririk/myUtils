@@ -29,13 +29,17 @@ def searchStats(lrgDiv: str, smlDiv: str, details = False):
   '''
   if details:
     datas = statisticsListSearch(lrgDiv=lrgDiv, smlDiv=smlDiv)
+    datas = pd.DataFrame(datas)
     stat_code_list = list(datas['list_no'])
     stat_name_list = list(datas['list_nm'])
     dfs = []
     for i in range(len(stat_code_list)):
-      dfs.append(accountListSearch(listNo=stat_code_list[i]))
+      data = accountListSearch(listNo=stat_code_list[i])
+      dfs.append(pd.DataFrame(data))
     result = pd.concat(dfs)[['list_no', 'account_cd', 'list_nm', 'account_nm']]
 
   else:
-    result = statisticsListSearch(lrgDiv=lrgDiv, smlDiv=smlDiv)
+    data = statisticsListSearch(lrgDiv=lrgDiv, smlDiv=smlDiv)
+    result = pd.DataFrame(data)
+
   return result
