@@ -12,7 +12,7 @@ if req_path.exists():
 
 setup(
     name="myUtils",
-    version="0.1.4",
+    version="0.1.5",
     
     package_dir={"": "src"},
     packages=find_packages(where="src"),

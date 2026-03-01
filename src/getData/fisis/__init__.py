@@ -1,4 +1,4 @@
-from . import functions
+from .functions import *
 
 __all__ = [
     'searchCompany', 'searchStats'
