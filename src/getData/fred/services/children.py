@@ -6,5 +6,5 @@ def children(category_id, start_date=None, end_date=None):
     if not start_date == end_date == None:
         url += f"&realtime_start={start_date}&realtime_end={end_date}"
 
-    data = getRequest(url, params=params).get('categories')
+    data = getRequest(url).get('categories')
     return data
