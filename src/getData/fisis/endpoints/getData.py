@@ -16,8 +16,8 @@ def getData(codes, start_date, end_date):
                                 term= term, 
                                 startBaseMm= start_date, 
                                 endBaseMm= end_date)
-    data = c_statInfo_to_df(data)
+    data = c_statInfo_to_df(data).set_index(['date', 'finance_cd'])
     dfs.append(data)
 
-  df = pd.concat(dfs, axis=1)
+  df = pd.concat(dfs, axis=1).reset_index()
   return df
