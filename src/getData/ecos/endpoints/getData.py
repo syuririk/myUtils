@@ -18,8 +18,8 @@ def _getSingleData(code, start_date, end_date):
     code += [None]*(5-len(code))
     data = statisticSearch( statCode= code[0], 
                             cycle= cycle, 
-                            start = start_val, 
-                            end= end_val, 
+                            start = start_var, 
+                            end= end_var, 
                             item1 = code[1] or "?", 
                             item2 = code[2] or "?", 
                             item3 = code[3] or "?", 
