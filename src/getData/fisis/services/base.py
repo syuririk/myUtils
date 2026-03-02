@@ -1,2 +1,2 @@
-from getData.fisis.utils.api import API
-from getData.fisis.utils.request import getRequest
+from ..utils.api import API
+from ..utils.request import getRequest

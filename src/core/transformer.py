@@ -1,6 +1,6 @@
 """
-utils/transformer.py
-데이터 변환 유틸리티.
+core/transformer.py
+데이터 변환 유틸리티 — EconDataset 내부에서 위임 호출된다.
 """
 
 from __future__ import annotations
@@ -10,12 +10,10 @@ import numpy as np
 
 
 class DataTransformer:
-    """정적 메서드 기반 데이터 변환 유틸리티."""
 
     @staticmethod
     def normalize(df: pd.DataFrame, method: str = "minmax") -> pd.DataFrame:
         """
-        정규화.
         method: 'minmax' | 'zscore' | 'base' (첫 시점=100)
         """
         if method == "minmax":
@@ -30,8 +28,7 @@ class DataTransformer:
     @staticmethod
     def rebase(df: pd.DataFrame, base_period: str) -> pd.DataFrame:
         """특정 시점을 100으로 환산."""
-        base = df.loc[base_period]
-        return df / base * 100
+        return df / df.loc[base_period] * 100
 
     @staticmethod
     def log_transform(df: pd.DataFrame) -> pd.DataFrame:

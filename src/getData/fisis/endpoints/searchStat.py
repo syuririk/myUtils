@@ -1,4 +1,4 @@
-from getData.fisis.services.accountListSearch import accountListSearch
+from ..services.accountListSearch import accountListSearch
 
 import pandas as pd
 

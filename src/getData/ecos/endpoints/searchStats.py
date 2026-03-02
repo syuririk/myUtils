@@ -1,5 +1,5 @@
-from getData.ecos.services.statisticTableList import statisticTableList
-from getData.ecos.services.statisticItemList import statisticItemList
+from ..services.statisticTableList import statisticTableList
+from ..services.statisticItemList import statisticItemList
 
 import pandas as pd
 

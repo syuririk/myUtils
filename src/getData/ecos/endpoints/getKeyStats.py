@@ -1,4 +1,4 @@
-from getData.ecos.services.keyStatisticList import keyStatisticList
+from ..services.keyStatisticList import keyStatisticList
 
 import pandas as pd
 

@@ -1,4 +1,4 @@
-from getData.fred.services.seriesObservations import seriesObservations
+from ..services.seriesObservations import seriesObservations
 
 import pandas as pd
 

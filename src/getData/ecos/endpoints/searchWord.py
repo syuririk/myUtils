@@ -1,4 +1,4 @@
-from getData.ecos.services.statisticWord import statisticWord
+from ..services.statisticWord import statisticWord
 
 def searchWord(word: str):
     result = statisticWord(word=word)

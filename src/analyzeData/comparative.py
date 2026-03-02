@@ -1,5 +1,5 @@
 """
-analysis/comparative.py
+analyzeData/comparative.py
 지표 간 비교 분석기.
 """
 
@@ -9,20 +9,23 @@ import pandas as pd
 import numpy as np
 from typing import List, Optional, Tuple
 
-from ..core.dataset import EconDataset
+from DataFrame.core.dataset import EconDataset
+from DataFrame.core.transformer import DataTransformer
 
 
 class ComparativeAnalyzer:
     """
-    여러 지표를 비교하는 분석기.
+    여러 지표 비교 분석기.
 
     Examples
     --------
     >>> ca = ComparativeAnalyzer(ds)
-    >>> ca.normalized_comparison('minmax')      # 정규화 후 비교 DataFrame
-    >>> ca.lead_lag('총지수', '식료품', max_lag=4)  # 리드-래그 상관계수
-    >>> ca.relative_performance()               # 기준 시점 대비 상대 성과
-    >>> ca.dispersion()                         # 지표 간 분산도 추이
+    >>> ca.normalized_comparison('minmax')             # 정규화 후 비교 DataFrame
+    >>> ca.lead_lag('총지수', '식료품', max_lag=4)    # 리드-래그 상관계수 Series
+    >>> ca.relative_performance()                      # 기준 시점 대비 상대 성과(%)
+    >>> ca.dispersion()                                # 시점별 지표 간 분산도
+    >>> ca.rolling_correlation('총지수', '식료품', 4) # 이동 상관계수
+    >>> ca.pairwise_correlation_matrix()               # 전체 / 특정 기간 상관행렬
     """
 
     def __init__(self, dataset: EconDataset):
@@ -30,8 +33,7 @@ class ComparativeAnalyzer:
         self._df = dataset.df
 
     def normalized_comparison(self, method: str = "minmax") -> pd.DataFrame:
-        """정규화된 지표 비교 DataFrame. method: 'minmax' | 'zscore'"""
-        from ..utils.transformer import DataTransformer
+        """정규화된 지표 비교. method: 'minmax' | 'zscore' | 'base'"""
         return DataTransformer.normalize(self._df, method)
 
     def lead_lag(
@@ -41,16 +43,13 @@ class ComparativeAnalyzer:
         max_lag: int = 4,
     ) -> pd.Series:
         """
-        indicator_a의 리드-래그 상관계수.
-        양수 lag → a가 b를 선행, 음수 → b가 a를 선행.
+        lag별 상관계수.
+        양수 lag → a 가 b 를 선행, 음수 → b 가 a 를 선행.
         """
         a, b = self._df[indicator_a], self._df[indicator_b]
         results = {}
         for lag in range(-max_lag, max_lag + 1):
-            if lag < 0:
-                results[lag] = a.corr(b.shift(-lag))
-            else:
-                results[lag] = a.shift(lag).corr(b)
+            results[lag] = a.corr(b.shift(-lag)) if lag < 0 else a.shift(lag).corr(b)
         return pd.Series(results, name=f"{indicator_a}_lag_{indicator_b}")
 
     def relative_performance(self, base_period: Optional[str] = None) -> pd.DataFrame:
@@ -61,9 +60,9 @@ class ComparativeAnalyzer:
     def dispersion(self) -> pd.DataFrame:
         """시점별 지표 간 분산도 (std, range, cv)."""
         result = pd.DataFrame(index=self._df.index)
-        result["std"] = self._df.std(axis=1)
+        result["std"]   = self._df.std(axis=1)
         result["range"] = self._df.max(axis=1) - self._df.min(axis=1)
-        result["cv"] = result["std"] / self._df.mean(axis=1) * 100
+        result["cv"]    = result["std"] / self._df.mean(axis=1) * 100
         return result
 
     def rolling_correlation(
@@ -75,7 +74,11 @@ class ComparativeAnalyzer:
         """두 지표 간 이동 상관계수."""
         return self._df[indicator_a].rolling(window).corr(self._df[indicator_b])
 
-    def pairwise_correlation_matrix(self, period: Optional[Tuple[str, str]] = None) -> pd.DataFrame:
-        """특정 기간의 지표 간 상관행렬."""
+    def pairwise_correlation_matrix(
+        self,
+        period: Optional[Tuple[str, str]] = None,
+        method: str = "pearson",
+    ) -> pd.DataFrame:
+        """전체 / 특정 기간의 지표 간 상관행렬."""
         sub = self._df.loc[period[0]:period[1]] if period else self._df
-        return sub.corr()
+        return sub.corr(method=method)

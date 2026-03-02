@@ -1,5 +1,5 @@
-from getData.fisis.services.statisticsInfoSearch import statisticsInfoSearch
-from getData.fisis.utils.convertData import c_statInfo_to_df
+from ..services.statisticsInfoSearch import statisticsInfoSearch
+from ..utils.convertData import c_statInfo_to_df
 
 import pandas as pd
 

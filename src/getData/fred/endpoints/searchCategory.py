@@ -1,5 +1,5 @@
-from getData.fred.services.children import children
-from getData.fred.services.category import category
+from ..services.children import children
+from ..services.category import category
 
 def searchCategory(category_id):
     data = category(category_id)

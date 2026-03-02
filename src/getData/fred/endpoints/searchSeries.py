@@ -1,5 +1,5 @@
-from getData.fred.services.categorySeries import categorySeries
-from getData.fred.services.tagsSeries import tagsSeries
+from ..services.categorySeries import categorySeries
+from ..services.tagsSeries import tagsSeries
 import pandas as pd
 
 def searchSeries(val_id :str, method='category'):

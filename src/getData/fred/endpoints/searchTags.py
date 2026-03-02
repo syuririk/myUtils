@@ -1,4 +1,4 @@
-from getData.fred.services.tags import tags
+from ..services.tags import tags
 import pandas as pd
 
 def searchTags(keyword = None, col='name'):

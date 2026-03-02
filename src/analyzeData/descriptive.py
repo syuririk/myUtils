@@ -1,5 +1,5 @@
 """
-analysis/descriptive.py
+analyzeData/descriptive.py
 기술통계 분석기.
 """
 
@@ -7,9 +7,9 @@ from __future__ import annotations
 
 import pandas as pd
 import numpy as np
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
-from ..core.dataset import EconDataset
+from DataFrame.core.dataset import EconDataset
 
 
 class DescriptiveAnalyzer:
@@ -19,10 +19,16 @@ class DescriptiveAnalyzer:
     Examples
     --------
     >>> da = DescriptiveAnalyzer(ds)
-    >>> da.summary()                    # 전체 지표 요약 DataFrame
-    >>> da.correlation()                # 지표 간 피어슨 상관계수
-    >>> da.yoy_table()                  # 전년 동기 대비 변화율 피벗
-    >>> da.rank_by_change()             # 최근 변화율 기준 순위
+    >>> da.summary()                              # 전체 지표 요약 DataFrame
+    >>> da.describe()                             # 확장 describe (skewness, kurtosis 포함)
+    >>> da.yoy_table()                            # 전년 동기 대비 변화율 테이블
+    >>> da.qoq_table()                            # 전분기 대비 변화율 테이블
+    >>> da.cumulative_table()                     # 기준 시점 대비 누적 변화율 테이블
+    >>> da.correlation()                          # 지표 간 상관계수 행렬
+    >>> da.correlation_with_target('총지수')      # 특정 지표와의 상관계수
+    >>> da.rank_by_change()                       # 최근 YoY 기준 순위
+    >>> da.contribution()                         # 가중치 기반 기여도
+    >>> da.period_compare(('2020','2022'), ('2022','2024'))  # 구간 비교
     """
 
     def __init__(self, dataset: EconDataset):
@@ -35,15 +41,11 @@ class DescriptiveAnalyzer:
 
     def summary(self) -> pd.DataFrame:
         """각 지표의 기초통계량 + 최신값 + 최신 YoY 변화율."""
-        rows = []
-        for name in self.dataset.indicators:
-            ind = self.dataset[name]
-            s = ind.summary()
-            rows.append(s)
+        rows = [self.dataset[name].summary() for name in self.dataset.indicators]
         return pd.DataFrame(rows).set_index("name")
 
     def describe(self) -> pd.DataFrame:
-        """pandas describe() 확장판."""
+        """pandas describe() + skewness + kurtosis."""
         base = self._df.describe().T
         base["skewness"] = self._df.skew()
         base["kurtosis"] = self._df.kurt()
@@ -76,11 +78,10 @@ class DescriptiveAnalyzer:
 
     def correlation_with_target(self, target: str, lag: int = 0) -> pd.Series:
         """특정 지표와 나머지 지표 간 상관계수 (lag 적용 가능)."""
-        shifted = self._df.shift(lag)
-        return shifted.corrwith(self._df[target]).drop(target)
+        return self._df.shift(lag).corrwith(self._df[target]).drop(target)
 
     # ------------------------------------------------------------------
-    # 기여도 / 순위
+    # 순위 / 기여도
     # ------------------------------------------------------------------
 
     def rank_by_change(self, periods: int = 4, ascending: bool = False) -> pd.DataFrame:
@@ -90,14 +91,13 @@ class DescriptiveAnalyzer:
 
     def contribution(self, weights: Optional[dict] = None) -> pd.DataFrame:
         """
-        가중치 기반 지표 기여도 분석.
-        weights: {'지표명': 가중치, ...} — 미지정 시 균등 가중치
+        가중치 기반 지표 기여도.
+        weights: {'지표명': 가중치} — 미지정 시 균등 가중치.
         """
         cols = self.dataset.indicators
         w = weights or {c: 1 / len(cols) for c in cols}
         yoy = self.yoy_table()
-        contrib = yoy.apply(lambda row: {c: row[c] * w.get(c, 0) for c in cols}, axis=1)
-        return pd.DataFrame(list(contrib), index=yoy.index)
+        return yoy.apply(lambda row: pd.Series({c: row[c] * w.get(c, 0) for c in cols}), axis=1)
 
     # ------------------------------------------------------------------
     # 구간 비교
@@ -105,18 +105,19 @@ class DescriptiveAnalyzer:
 
     def period_compare(
         self,
-        period_a: tuple,
-        period_b: tuple,
+        period_a: Tuple[str, str],
+        period_b: Tuple[str, str],
         stat: str = "mean",
     ) -> pd.DataFrame:
         """
         두 기간의 통계량 비교.
-
-        Parameters
-        ----------
-        period_a, period_b : (start_str, end_str)
-        stat : 'mean' | 'std' | 'max' | 'min'
+        stat: 'mean' | 'std' | 'max' | 'min'
         """
         a = getattr(self._df.loc[period_a[0]:period_a[1]], stat)()
         b = getattr(self._df.loc[period_b[0]:period_b[1]], stat)()
-        return pd.DataFrame({"period_a": a, "period_b": b, "diff": b - a, "pct_diff": (b / a - 1) * 100})
+        return pd.DataFrame({
+            "period_a": a,
+            "period_b": b,
+            "diff":     b - a,
+            "pct_diff": (b / a - 1) * 100,
+        })

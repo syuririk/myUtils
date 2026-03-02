@@ -1,4 +1,4 @@
-from getData.fisis.services.companySearch import companySearch
+from ..services.companySearch import companySearch
 import pandas as pd
 
 def searchCompany(div):
