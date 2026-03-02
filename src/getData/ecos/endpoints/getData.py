@@ -2,15 +2,16 @@ from getData.ecos.utils.convertData import parseTime
 
 import pandas as pd
 
-period_map = {
-    "A": lambda d: d[:4],
-    "Q": lambda d: d[:4] + "Q1",
-    "M": lambda d: d[:6],
-    "D": lambda d: d,
-    "S": lambda d: d[:4] + "S1",
-    "SM": lambda d: d[:6] + "S1"}
+
 
 def _getSingleData(code, start_date, end_date)
+    period_map = {
+        "A": lambda d: d[:4],
+        "Q": lambda d: d[:4] + "Q1",
+        "M": lambda d: d[:6],
+        "D": lambda d: d,
+        "S": lambda d: d[:4] + "S1",
+        "SM": lambda d: d[:6] + "S1"}
     cycle = code.pop(0)
     start_var = period_map[cycle](start_date)
     end_var = period_map[cycle](end_date)
