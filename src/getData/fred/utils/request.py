@@ -1,19 +1,11 @@
 import requests
 
 ERR_DICT = {
-    "000": "정상",
-    "010": "미등록 인증키",
-    "011": "중지된 인증키",
-    "012": "삭제된 인증키",
-    "013": "샘플 인증키",
-    "020": "일일검색 허용횟수 초과",
-    "021": "허용된 IP가 아님",
-    "022": "허용된 언어가 아님",
-    "100": "요청값 누락",
-    "101": "잘못된 요청값",
-    "102": "시작일이 종료일보다 큼",
-    "103": "검색 기간은 40분기를 초과할 수 없음",
-    "900": "정의되지 않은 오류"
+    "400": "Bad Request",
+    "404": "Not Found",
+    "423": "Locked",
+    "429": "Too Many Requests",
+    "500": "Internal Server Error"
 }
 
 class FredAPIError(Exception):
@@ -32,12 +24,11 @@ def getRequest(url, print_url=True):
 
     data = res.json()
 
-    # result = data.get("result", {})
-    # err_cd = result.get("err_cd")
+    err_cd = data.get("error_code")
 
-    # if err_cd != "000":
-    #     msg = ERR_DICT.get(err_cd, "알 수 없는 오류")
-    #     raise FisisAPIError(f"[{err_cd}] {msg}")
+    if err_cd:
+        msg = ERR_DICT.get(err_cd, "알 수 없는 오류")
+        raise FisisAPIError(f"[{err_cd}] {msg}")
 
     return data
 
