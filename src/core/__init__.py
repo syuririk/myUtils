@@ -1,7 +1,7 @@
-from analyzeData.dataset import EconDataset
-from analyzeData.indicator import Indicator
-from analyzeData.transformer import DataTransformer
-from analyzeData.vaildator import DataValidator
+from core.dataset import EconDataset
+from core.indicator import Indicator
+from core.transformer import DataTransformer
+from core.vaildator import DataValidator
 
 
 
