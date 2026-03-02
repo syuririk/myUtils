@@ -8,7 +8,7 @@ def searchStats(keyword, sub_col: str = None, col_val: str = None):
 
     candidate_dick = {}
     for row in data:
-        if keyword in row.get('STAT_NAME')
+        if keyword in row.get('STAT_NAME'):
             candidate_dict[row['STAT_NAME']] = row
     
     result = {}
