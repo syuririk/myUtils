@@ -55,10 +55,8 @@ class HeatmapChart(BaseChart):
             hovertemplate="<b>%{y}</b> vs <b>%{x}</b><br>상관계수: %{z:.3f}<extra></extra>",
             colorbar=dict(title="상관계수", thickness=15),
         ))
-        fig.update_layout(
-            **self._base_layout(title=title, height=h),
-            xaxis=dict(tickangle=30),
-        )
+        fig.update_layout(**self._base_layout(title=title, height=h))
+        fig.update_xaxes(tickangle=30)
         return fig
 
     # ------------------------------------------------------------------
