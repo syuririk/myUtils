@@ -12,6 +12,7 @@ def _getSingleData(code, start_date, end_date):
         "D": lambda d: d,
         "S": lambda d: d[:4] + "S1",
         "SM": lambda d: d[:6] + "S1"}
+
     cycle = code.pop(0)
     start_var = period_map[cycle](start_date)
     end_var = period_map[cycle](end_date)
@@ -38,7 +39,7 @@ def _getSingleData(code, start_date, end_date):
         lambda row: f'{stat_name}_' + '_'.join([str(val).strip() for val in row if val]), axis=1 )
 
     pivot_df = df.pivot_table(
-        index="TIME", 
+        index="date", 
         columns="stat_name", 
         values="DATA_VALUE",
         aggfunc="first")
