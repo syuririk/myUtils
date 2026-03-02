@@ -45,13 +45,14 @@ def _getSingleData(code, start_date, end_date):
         aggfunc="first")
 
     pivot_df = pivot_df.rename_axis(None, axis=1).sort_index().reset_index()
+    reurn pivot_df
 
 def getData(codes: list, start_date: str, end_date: str):
     dfs = []
     for code in codes:
         try:
-            _getSingleData(code, start_date, end_date)
-            dfs.append(pivot_df)
+            df = _getSingleData(code, start_date, end_date)
+            dfs.append(df)
         except Exception as e:
             print(f"fail to download {code} - {start_date} - {end_date} - {e}")
 
