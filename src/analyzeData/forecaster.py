@@ -10,7 +10,7 @@ import numpy as np
 from dataclasses import dataclass
 from typing import Optional
 
-from DataFrame.core.dataset import EconDataset
+from ..core.dataset import EconDataset
 
 
 @dataclass

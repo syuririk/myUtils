@@ -9,8 +9,8 @@ import pandas as pd
 import numpy as np
 from typing import List, Optional, Tuple
 
-from DataFrame.core.dataset import EconDataset
-from DataFrame.core.transformer import DataTransformer
+from ..core.dataset import EconDataset
+from ..core.transformer import DataTransformer
 
 
 class ComparativeAnalyzer:
