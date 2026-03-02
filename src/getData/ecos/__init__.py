@@ -1,5 +1,5 @@
 from .endpoints.setApiKey import setApiKey
-from .endpoints.keyStats import keyStats
+from .endpoints.getKeyStats import getKeyStats
 from .endpoints.searchStats import searchStats
 from .endpoints.searchWord import searchWord
 
@@ -13,7 +13,7 @@ from .services.statisticWord import statisticWord
 
 
 __all__ = [
-    'setApiKey', 'keyStats', 'searchStats', 'searchWord'
+    'setApiKey', 'getKeyStats', 'searchStats', 'searchWord'
 
     'keyStatisticList', 'statisticItemList', 'statisticMeta', 'statisticSearch', 'statisticTableList', 'statisticWord'
 ]
