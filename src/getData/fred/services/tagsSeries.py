@@ -1,6 +1,9 @@
 from .base import *
 
 def tagsSeries(tag):
-    url = f"https://api.stlouisfed.org/fred/tags/series?tag_names={tag}&api_key={API.get_api_key()}&file_type=json&order_by=popularity&sort_order=desc"
+    api_key = API.get_api_key()
+    
+    base_url = "https://api.stlouisfed.org/fred/tags/series"
+    url = f"{base_url}?tag_names={tag}&api_key={api_key}&file_type=json&order_by=popularity&sort_order=desc"
     data = getRequest(url).get('seriess')
     return data
