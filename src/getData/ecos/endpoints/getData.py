@@ -44,7 +44,7 @@ def _getSingleData(code, start_date, end_date):
         values="DATA_VALUE",
         aggfunc="first")
 
-    pivot_df = pivot_df.rename_axis(None, axis=1).sort_index().reset_index()
+    pivot_df = pivot_df.rename_axis(None, axis=1).sort_index().reset_index().set_index('date')
     return pivot_df
 
 def getData(codes: list, start_date: str, end_date: str):
@@ -56,6 +56,6 @@ def getData(codes: list, start_date: str, end_date: str):
         except Exception as e:
             print(f"fail to download {code} - {start_date} - {end_date} - {e}")
 
-    df = pd.concat(dfs, axis=1).reset_index().rename(columns={"TIME":"date"})
+    df = pd.concat(dfs, axis=1).reset_index()
     return df
 
