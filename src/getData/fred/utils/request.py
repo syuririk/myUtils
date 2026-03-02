@@ -25,7 +25,7 @@ def getRequest(url, print_url=True):
 
     if err_cd:
         msg = data.get("error_message")
-        raise FisisAPIError(f"[{err_cd}] {msg}")
+        raise FredAPIError(f"[{err_cd}] {msg}")
 
     return data
 
