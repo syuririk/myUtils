@@ -6,7 +6,7 @@ import pandas as pd
 def searchStats(keyword, sub_col: str = None, col_val: str = None):
     data = statisticTableList()
 
-    candidate_dick = {}
+    candidate_dict = {}
     for row in data:
         if keyword in row.get('STAT_NAME'):
             candidate_dict[row['STAT_NAME']] = row
