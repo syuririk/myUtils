@@ -26,4 +26,4 @@ def searchStats(keyword, sub_col: str = None, col_val: str = None):
         except:
             pass
 
-    return pd.DataFrame(result)
+    return pd.DataFrame(result).T

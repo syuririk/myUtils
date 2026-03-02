@@ -1,4 +1,5 @@
 from getData.ecos.utils.convertData import parseTime
+from getData.ecos.services.statisticSearch import statisticSearch
 
 import pandas as pd
 
