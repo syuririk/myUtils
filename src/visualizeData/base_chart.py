@@ -43,8 +43,13 @@ class BaseChart:
         title: str = "",
         xaxis_title: str = "",
         yaxis_title: str = "",
+        width: int = None,
+        height: int = None,
     ) -> dict:
-        """공통 레이아웃 딕셔너리 반환."""
+        """
+        공통 레이아웃 딕셔너리 반환.
+        width / height 를 직접 넘기면 인스턴스 기본값을 덮어쓴다.
+        """
         return dict(
             title=dict(text=title, font=dict(size=16, color="#1e293b"), x=0.02),
             xaxis=dict(title=xaxis_title, showgrid=True, gridcolor="#e2e8f0", zeroline=False),
@@ -59,8 +64,8 @@ class BaseChart:
                 bgcolor="rgba(255,255,255,0.8)",
                 bordercolor="#e2e8f0", borderwidth=1,
             ),
-            width=self.width,
-            height=self.height,
+            width=width if width is not None else self.width,
+            height=height if height is not None else self.height,
             hovermode="x unified",
             margin=dict(l=60, r=40, t=80, b=60),
             template=self.theme,

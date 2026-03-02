@@ -161,6 +161,7 @@ class BarChart(BaseChart):
         """최신 시점 YoY 변화율 기준 가로 순위 바."""
         yoy_sorted = (self._df.pct_change(periods).iloc[-1] * 100).sort_values()
         colors     = [self.palette[0] if v >= 0 else self.palette[1] for v in yoy_sorted]
+        h          = max(300, len(yoy_sorted) * 50)
 
         fig = go.Figure(go.Bar(
             x=yoy_sorted.values, y=yoy_sorted.index,
@@ -168,8 +169,9 @@ class BarChart(BaseChart):
             hovertemplate="<b>%{y}</b><br>YoY: %{x:.2f}%<extra></extra>",
         ))
         fig.add_vline(x=0, line_width=1, line_color="#94a3b8")
-        fig.update_layout(
-            **self._base_layout(title=title, xaxis_title="YoY 변화율 (%)"),
-            height=max(300, len(yoy_sorted) * 50),
-        )
+        fig.update_layout(**self._base_layout(
+            title=title,
+            xaxis_title="YoY 변화율 (%)",
+            height=h,
+        ))
         return fig
