@@ -1,17 +1,14 @@
 from .endpoints.setApiKey import setApiKey
 
-from .services.KeyStatisticList import KeyStatisticList
-from .services.StatisticItemList import StatisticItemList
-from .services.StatisticMeta import StatisticMeta
-from .services.StatisticSearch import StatisticSearch
-from .services.StatisticTableList import StatisticTableList
-from .services.StatisticWord import StatisticWord
+from .services.keyStatisticList import keyStatisticList
+from .services.statisticItemList import statisticItemList
+from .services.statisticMeta import statisticMeta
+from .services.statisticSearch import statisticSearch
+from .services.statisticTableList import statisticTableList
+from .services.statisticWord import statisticWord
 
 __all__ = [
     'setApiKey',
 
-
-
-
-    'KeyStatisticList', 'StatisticItemList', 'StatisticMeta', 'StatisticSearch', 'StatisticTableList', 'StatisticWord'
+    'keyStatisticList', 'statisticItemList', 'statisticMeta', 'statisticSearch', 'statisticTableList', 'statisticWord'
 ]
