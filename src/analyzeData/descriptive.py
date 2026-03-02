@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 from typing import List, Optional, Tuple
 
-from ..core.dataset import EconDataset
+from src.core.dataset import EconDataset
 
 
 class DescriptiveAnalyzer:

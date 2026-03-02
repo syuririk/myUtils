@@ -11,9 +11,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from typing import List, Optional
 
-from ..visualizeData.base_chart import BaseChart
-from ..core.dataset import EconDataset
-from ..analyzeData.forecaster import ForecastResult
+from src.visualizeData.base_chart import BaseChart
+from src.core.dataset import EconDataset
+from src.analyzeData.forecaster import ForecastResult
 
 
 class LineChart(BaseChart):
