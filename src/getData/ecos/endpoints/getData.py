@@ -45,7 +45,7 @@ def _getSingleData(code, start_date, end_date):
         aggfunc="first")
 
     pivot_df = pivot_df.rename_axis(None, axis=1).sort_index().reset_index()
-    reurn pivot_df
+    return pivot_df
 
 def getData(codes: list, start_date: str, end_date: str):
     dfs = []
