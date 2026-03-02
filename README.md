@@ -14,7 +14,7 @@ sec
 
 
 # queue
-fred - getdata
+fred - parseTime
 
 ecos
 

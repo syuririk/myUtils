@@ -3,7 +3,7 @@ from getData.fisis.utils.convertData import c_statInfo_to_df
 
 import pandas as pd
 
-def getData(codes, start_date, end_date):
+def getData(codes: list, start_date: str, end_date: str):
   dfs = []
   for code in codes:
     financeCd = code[0] 

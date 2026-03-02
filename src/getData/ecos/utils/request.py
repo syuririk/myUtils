@@ -27,7 +27,7 @@ def getRequest(url, print_url=True):
     res = requests.get(url)
 
     if res.status_code != 200:
-        raise FisisAPIError(f"HTTP Error: {res.status_code}")
+        raise EcosAPIError(f"HTTP Error: {res.status_code}")
 
     data = res.json()
 
