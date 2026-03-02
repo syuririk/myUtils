@@ -1,4 +1,4 @@
-from getData import fisis, fred
+from getData import fisis, fred, ecos
 __all__ = [
-    'fisis', 'fred'
+    'fisis', 'fred', 'ecos'
 ]
