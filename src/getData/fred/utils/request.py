@@ -19,15 +19,12 @@ def getRequest(url, print_url=True):
 
     res = requests.get(url)
 
-    if res.status_code != 200:
-        raise FredAPIError(f"HTTP 오류: {res.status_code}")
-
     data = res.json()
 
     err_cd = data.get("error_code")
 
     if err_cd:
-        msg = ERR_DICT.get(err_cd, "알 수 없는 오류")
+        msg = data.get("error_message")
         raise FisisAPIError(f"[{err_cd}] {msg}")
 
     return data
