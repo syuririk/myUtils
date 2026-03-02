@@ -4,7 +4,7 @@ import pandas as pd
 
 def getData(codes, start_date, end_date):
     dfs = []
-    for code in codes
+    for code in codes:
         data = seriesObservations(code, start_date, end_date)
         df = pd.DataFrame(data)
 
