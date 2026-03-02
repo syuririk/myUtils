@@ -1,5 +1,5 @@
-from getData.fisis.services.statisticTableList import statisticTableList
-from getData.fisis.services.statisticItemList import statisticItemList
+from getData.ecos.services.statisticTableList import statisticTableList
+from getData.ecos.services.statisticItemList import statisticItemList
 
 import pandas as pd
 

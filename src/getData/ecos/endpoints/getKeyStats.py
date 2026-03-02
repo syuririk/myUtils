@@ -1,4 +1,4 @@
-from getData.fisis.services.keyStatisticList import keyStatisticList
+from getData.ecos.services.keyStatisticList import keyStatisticList
 
 import pandas as pd
 
