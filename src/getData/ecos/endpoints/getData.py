@@ -2,6 +2,7 @@ from getData.ecos.utils.convertData import parseTime
 from getData.ecos.services.statisticSearch import statisticSearch
 
 import pandas as pd
+import re
 
 def _getSingleData(code, start_date, end_date):
     period_map = {
@@ -51,7 +52,7 @@ def getData(codes: list, start_date: str, end_date: str):
             _getSingleData(code, start_date, end_date)
             dfs.append(pivot_df)
         except Exception as e:
-            print(f"fail to download {code} - {start_var} - {end_var} - {e}")
+            print(f"fail to download {code} - {start_date} - {end_date} - {e}")
 
     df = pd.concat(dfs, axis=1).reset_index().rename(columns={"TIME":"date"})
     return df
