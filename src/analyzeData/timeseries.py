@@ -10,7 +10,7 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import Optional, List
 
-from src.core.dataset import EconDataset
+from core.dataset import EconDataset
 
 
 @dataclass
