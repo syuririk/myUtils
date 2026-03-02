@@ -1,82 +1,58 @@
+from getData.ecos.utils.convertData import parseTime
 
+import pandas as pd
 
-def getData(codes: list, start_date, end_date):
-    for code in codes:
-        code += [None]*(5-len(code))
-        statisticSearch(statCode= code[0], 
-                        cycle: str, 
-                        start: str, 
-                        end: str, 
-                        item1 = code[1] or "?", 
-                        item2 = code[2] or "?", 
-                        item3 = code[3] or "?", 
-                        item4 = code[4] or "?")
+period_map = {
+    "A": lambda d: d[:4],
+    "Q": lambda d: d[:4] + "Q1",
+    "M": lambda d: d[:6],
+    "D": lambda d: d,
+    "S": lambda d: d[:4] + "S1",
+    "SM": lambda d: d[:6] + "S1"}
 
+def _getSingleData(code, start_date, end_date)
+    cycle = code.pop(0)
+    start_var = period_map[cycle](start_date)
+    end_var = period_map[cycle](end_date)
 
-def processECOSData(self, data=dict):
+    code += [None]*(5-len(code))
+    data = statisticSearch( statCode= code[0], 
+                            cycle= cycle, 
+                            start = start_val, 
+                            end: end_val, 
+                            item1 = code[1] or "?", 
+                            item2 = code[2] or "?", 
+                            item3 = code[3] or "?", 
+                            item4 = code[4] or "?")
+    
+    stat_name = re.sub(r'^[\d\.]+\s*', '', data[0]["STAT_NAME"])
 
-    first = rows[0]
-    stat_name = re.sub(r'^[\d\.]+\s*', '', first["STAT_NAME"])
-    data_detail = first
-
-    df = pd.DataFrame(rows)
-    df["TIME"] = df["TIME"].map(self.parseTime)
+    df = pd.DataFrame(data)
+    df["TIME"] = df["TIME"].map(parseTime)
+    df = df.rename(columns={"TIME":"date"})
     df["DATA_VALUE"] = pd.to_numeric(df["DATA_VALUE"], errors="coerce")
 
-    for col in ["ITEM_NAME4","ITEM_NAME3","ITEM_NAME2","ITEM_NAME1"]:
-        if col in df.columns and df[col].notna().any():
-            name_col = col
-            break
-    else:
-        df = df[["TIME","DATA_VALUE"]].set_index("TIME")
-        df.columns = [stat_name]
-        return df, data_detail
+    name_cols = ['ITEM_NAME1', 'ITEM_NAME2', 'ITEM_NAME3', 'ITEM_NAME4']
+    df['stat_name'] = df[name_cols].apply(
+        lambda row: f'{stat_name}_' + '_'.join([str(val).strip() for val in row if val]), axis=1 )
 
-    df["col"] = df[name_col].astype(str).str.strip()
-
-    df = df.pivot_table(
-        index="TIME",
-        columns="col",
+    pivot_df = df.pivot_table(
+        index="TIME", 
+        columns="stat_name", 
         values="DATA_VALUE",
-        aggfunc="first"
-    ).sort_index()
+        aggfunc="first")
 
-    df.columns = [stat_name if c == "" else f"{stat_name}_{c}" for c in df.columns]
+    pivot_df = pivot_df.rename_axis(None, axis=1).sort_index().reset_index()
 
-    return df, data_detail
-
-def getECOSData(self, codes, method="value", start_date="20230101", end_date="20260101", return_detail=False):
-
-    period_map = {
-        "A": lambda d: d[:4],
-        "Q": lambda d: d[:4] + "Q1",
-        "M": lambda d: d[:6],
-        "D": lambda d: d,
-        "S": lambda d: d[:4] + "S1",
-        "SM": lambda d: d[:6] + "S1"
-    }
-
+def getData(codes: list, start_date: str, end_date: str):
     dfs = []
-    details = {}
-
     for code in codes:
-        per, code_data = code
-
-        if per not in period_map:
-            raise ValueError(f"period is not valid: {per}")
-
-        start_var = period_map[per](start_date)
-        end_var = period_map[per](end_date)
-
         try:
-            data = self.generateECOSData(code=code_data, period=per, start_date=start_var, end_date=end_var)
-            processed_data, detail = self.processECOSData(data)
-            dfs.append(processed_data)
-            details[code_data[0]] = detail
+            _getSingleData(code, start_date, end_date)
+            dfs.append(pivot_df)
         except:
             print(f"fail to download {code_data} - {per} - {start_var} - {end_var}")
 
     df = pd.concat(dfs, axis=1).reset_index().rename(columns={"TIME":"date"})
-
-    return (df, details) if return_detail else df
+    return df
 
