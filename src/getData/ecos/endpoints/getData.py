@@ -4,7 +4,7 @@ import pandas as pd
 
 
 
-def _getSingleData(code, start_date, end_date)
+def _getSingleData(code, start_date, end_date):
     period_map = {
         "A": lambda d: d[:4],
         "Q": lambda d: d[:4] + "Q1",
