@@ -3,7 +3,7 @@ from getData.ecos.services.statisticItemList import statisticItemList
 
 import pandas as pd
 
-def searchStats(keyword, sub_col=None, col_val:str):
+def searchStats(keyword, sub_col: str = None, col_val: str = None):
     data = statisticTableList()
 
     candidate_dick = {}
