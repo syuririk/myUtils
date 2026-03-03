@@ -94,7 +94,7 @@ class EconCalculator:
                 self._df[zname] = self._csZscore(name, date_col=date_col).astype("float32")
 
         for col in self._df.columns:
-            if col not in self._Dataset._stats:
+            if col not in self._Dataset.stats:
                 self._Dataset._stats[col] = EconStats(self._df[col])
 
         return self._Dataset

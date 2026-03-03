@@ -105,14 +105,18 @@ class EconDataset:
     def calculator(self) -> EconCalculator:
         return self._calculator
 
+    @property
+    def stats(self) -> Dict[str, EconStats]:
+        return self._stats
+
     # ------------------------------------------------------------------
     # 접근
     # ------------------------------------------------------------------
 
-    def __getitem__(self, key: str) -> EconStats:
-        if key not in self._stats:
+    def __getitem__(self, key: str) -> pd.Series:
+        if key not in self._df.columns:
             raise KeyError(f"'{key}' 지표 없음. 가능한 지표: {self.indicators}")
-        return self._stats[key]
+        return self._df[key]
 
     def __repr__(self) -> str:
         return (

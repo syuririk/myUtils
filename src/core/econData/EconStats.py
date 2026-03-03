@@ -12,6 +12,10 @@ class EconStats:
     def __init__(self, series: pd.Series):
         self._series = series
 
+    # ------------------------------------------------------------------
+    # 통계 함수
+    # ------------------------------------------------------------------
+
     def summary(self, col: str) -> dict:
         return {
             "name":              col,
@@ -26,7 +30,7 @@ class EconStats:
             "skewness":          float(stats.skew(self._series.dropna())),
             "kurtosis":          float(stats.kurtosis(self._series.dropna())),
             "quantile":          self.quantile(),
-            "stationarity_test": self.stationarity_test(),
+            # "stationarity_test": self.stationarity_test(),
         }
 
     # ------------------------------------------------------------------
@@ -43,16 +47,16 @@ class EconStats:
             return float(result)
 
 
-    def stationarity_test(self) -> dict:
-        adf_result = stats.adfuller(self._series.dropna(), autolag='AIC')
+    # def stationarity_test(self) -> dict:
+    #     adf_result = stats.adfuller(self._series.dropna(), autolag='AIC')
         
-        return {
-            'adf_statistic': float(adf_result[0]),
-            'p_value': float(adf_result[1]),
-            'critical_values': {
-                '1%': float(adf_result[4]['1%']),
-                '5%': float(adf_result[4]['5%']),
-                '10%': float(adf_result[4]['10%']),
-            },
-            'is_stationary': bool(adf_result[1] < 0.05),
-        }
+    #     return {
+    #         'adf_statistic': float(adf_result[0]),
+    #         'p_value': float(adf_result[1]),
+    #         'critical_values': {
+    #             '1%': float(adf_result[4]['1%']),
+    #             '5%': float(adf_result[4]['5%']),
+    #             '10%': float(adf_result[4]['10%']),
+    #         },
+    #         'is_stationary': bool(adf_result[1] < 0.05),
+    #     }
