@@ -9,11 +9,10 @@ import pandas as pd
 import numpy as np
 from typing import Optional
 
-from .EconDataset import EconDataset
 
 class EconCalculator:
 
-    def __init__(self, Dataset: EconDataset):
+    def __init__(self, Dataset):
         self._Dataset = Dataset
         self._df = Dataset.df
 
@@ -57,7 +56,7 @@ class EconCalculator:
     # 팩터 계산
     # ------------------------------------------------------------------
 
-    def computeFactors(self, factor_dict: dict, zscore: bool = True, date_col: str = "date") -> EconDataset:
+    def computeFactors(self, factor_dict: dict, zscore: bool = True, date_col: str = "date"):
         """팩터를 계산하여 EconDataset._df에 추가.
         
         Parameters
