@@ -3,7 +3,24 @@ import pandas as pd
 
 from . import DataProcessUtils
 
+def safe_div(numer: pd.Series, denom: pd.Series) -> pd.Series:
+  """
+  Safely divide two numeric Series, avoiding division-by-zero errors.
 
+  Parameters
+  ----------
+  numer : pandas.Series
+    Numerator values.
+  denom : pandas.Series
+    Denominator values.
+
+  Returns
+  -------
+  pandas.Series
+    Result of division with infinities and invalid results replaced by NaN.
+  """
+  result = numer / denom.replace(0, np.nan)
+  return result.replace([np.inf, -np.inf], np.nan)
 # ======================================================================
 # Basic factor generators
 # ======================================================================

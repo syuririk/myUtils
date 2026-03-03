@@ -12,10 +12,10 @@ class EconDataValidator:
 
     @staticmethod
     def validate(df: pd.DataFrame) -> None:
-        DataValidator._check_index(df)
-        DataValidator._check_numeric(df)
-        DataValidator._warn_missing(df)
-        DataValidator._warn_duplicates(df)
+        EconDataValidator._check_index(df)
+        EconDataValidator._check_numeric(df)
+        EconDataValidator._warn_missing(df)
+        EconDataValidator._warn_duplicates(df)
 
     @staticmethod
     def _check_index(df: pd.DataFrame) -> None:
