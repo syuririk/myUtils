@@ -12,7 +12,7 @@ from plotly.subplots import make_subplots
 from typing import List, Optional
 
 from visualizeData.base_chart import BaseChart
-from core.dataset import EconDataset
+from core.econData.EconDataset import EconDataset
 from analyzeData.forecaster import ForecastResult
 
 

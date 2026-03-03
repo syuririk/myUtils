@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 from typing import List, Optional, Tuple
 
 from visualizeData.base_chart import BaseChart
-from core.dataset import EconDataset
+from core.econData.EconDataset import EconDataset
 
 
 class BarChart(BaseChart):

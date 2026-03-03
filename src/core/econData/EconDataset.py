@@ -12,9 +12,9 @@ from pathlib import Path
 from typing import Union, List, Optional, Dict
 
 from .indicator import Indicator
-from .validator import DataValidator
-from .transformer import DataTransformer
-
+from .EconDataValidator import EconDataValidator
+from .EconStats import EconStats
+from .EconCalculator import EconCalculator
 
 class EconDataset:
     """
@@ -36,7 +36,7 @@ class EconDataset:
     --------
     >>> ds = EconDataset(df, date_col='date', name='소비자물가지수')
     >>> ds.indicators               # ['총지수', '식료품', ...]
-    >>> ds['총지수']                # Indicator 객체 반환
+    >>> ds['총지수']                # EconCalculator 객체 반환
     >>> ds.slice('2020', '2022')   # 기간 필터 → 새 EconDataset
     >>> ds.normalize('minmax')     # 정규화 → 새 EconDataset
     """
@@ -44,21 +44,22 @@ class EconDataset:
     def __init__(
         self,
         df: pd.DataFrame,
-        date_col: Optional[str] = None,
-        freq: Optional[str] = None,
         name: str = "EconDataset",
+        date_col: Optional[str] = 'date',
+        freq: Optional[str] = None
     ):
         self.name = name
         self._raw = df.copy()
         self._df = self._prepare(df, date_col)
         self._freq = freq or pd.infer_freq(self._df.index) or "QS"
 
-        DataValidator.validate(self._df)
+        EconDataValidator.validate(self._df)
 
-        self._indicators: Dict[str, Indicator] = {
-            col: Indicator(col, self._df[col]) for col in self._df.columns
+        self._stats: Dict[str, EconStats] = {
+            col: EconStats(self._df[col]) for col in self._df.columns
         }
 
+        self._calculator = EconCalculator(self)
     # ------------------------------------------------------------------
     # 내부 준비
     # ------------------------------------------------------------------
@@ -82,7 +83,7 @@ class EconDataset:
         return self._df
 
     @property
-    def indicators(self) -> List[str]:
+    def indicators(self) -> List[str]: 
         return list(self._df.columns)
 
     @property
@@ -101,14 +102,18 @@ class EconDataset:
     def shape(self):
         return self._df.shape
 
+    @property
+    def calculator(self) -> EconCalculator:
+        return self._calculator
+
     # ------------------------------------------------------------------
     # 접근
     # ------------------------------------------------------------------
 
-    def __getitem__(self, key: str) -> Indicator:
-        if key not in self._indicators:
+    def __getitem__(self, key: str) -> EconStats:
+        if key not in self._stats:
             raise KeyError(f"'{key}' 지표 없음. 가능한 지표: {self.indicators}")
-        return self._indicators[key]
+        return self._stats[key]
 
     def __repr__(self) -> str:
         return (
@@ -137,25 +142,6 @@ class EconDataset:
         """특정 지표만 선택한 새 EconDataset 반환."""
         return self._clone_with(self._df[indicators])
 
-    # ------------------------------------------------------------------
-    # 변환
-    # ------------------------------------------------------------------
-
-    def normalize(self, method: str = "minmax") -> "EconDataset":
-        """정규화. method: 'minmax' | 'zscore' | 'base'"""
-        return self._clone_with(DataTransformer.normalize(self._df, method))
-
-    def rebase(self, base_period: str) -> "EconDataset":
-        """특정 시점을 100으로 환산."""
-        return self._clone_with(DataTransformer.rebase(self._df, base_period))
-
-    def pct_change(self, periods: int = 1) -> "EconDataset":
-        """변화율(%) EconDataset 반환."""
-        return self._clone_with(self._df.pct_change(periods=periods).mul(100).dropna())
-
-    def rolling(self, window: int, func: str = "mean") -> "EconDataset":
-        """이동 통계량 (mean | std | sum) EconDataset 반환."""
-        return self._clone_with(getattr(self._df.rolling(window), func)().dropna())
 
     # ------------------------------------------------------------------
     # 팩토리
@@ -179,5 +165,6 @@ class EconDataset:
         new_ds._raw = new_df
         new_ds._df = new_df
         new_ds._freq = self._freq
-        new_ds._indicators = {col: Indicator(col, new_df[col]) for col in new_df.columns}
+        new_ds._stats = {col: EconStats(new_df[col]) for col in new_df.columns}
+        new_ds._calculator = EconCalculator(new_ds)
         return new_ds

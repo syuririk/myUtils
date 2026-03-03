@@ -9,8 +9,8 @@ import pandas as pd
 import numpy as np
 from typing import List, Optional, Tuple
 
-from core.dataset import EconDataset
-from core.transformer import DataTransformer
+from core.econData.EconDataset import EconDataset
+# from core.transformer import DataTransformer
 
 
 class ComparativeAnalyzer:
@@ -32,9 +32,9 @@ class ComparativeAnalyzer:
         self.dataset = dataset
         self._df = dataset.df
 
-    def normalized_comparison(self, method: str = "minmax") -> pd.DataFrame:
-        """정규화된 지표 비교. method: 'minmax' | 'zscore' | 'base'"""
-        return DataTransformer.normalize(self._df, method)
+    # def normalized_comparison(self, method: str = "minmax") -> pd.DataFrame:
+    #     """정규화된 지표 비교. method: 'minmax' | 'zscore' | 'base'"""
+    #     return DataTransformer.normalize(self._df, method)
 
     def lead_lag(
         self,

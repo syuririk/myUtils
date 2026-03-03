@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 from typing import Optional, List
 
 from visualizeData.base_chart import BaseChart
-from core.dataset import EconDataset
+from core.econData.EconDataset import EconDataset
 
 
 class HeatmapChart(BaseChart):

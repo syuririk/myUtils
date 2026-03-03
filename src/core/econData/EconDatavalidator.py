@@ -8,7 +8,7 @@ from __future__ import annotations
 import pandas as pd
 
 
-class DataValidator:
+class EconDataValidator:
 
     @staticmethod
     def validate(df: pd.DataFrame) -> None:
