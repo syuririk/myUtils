@@ -123,8 +123,8 @@ class EconDataset:
             raise KeyError(f"'{key}' 지표 없음. 가능한 지표: {self.indicators}")
         return self._df[key]
 
-    def __repr__(self) -> pd.DataFrame:
-        return self._df
+    def __repr__(self) -> str:
+        return self._df.__repr__()
     # ------------------------------------------------------------------
     # 필터링
     # ------------------------------------------------------------------
