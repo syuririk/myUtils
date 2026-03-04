@@ -7,13 +7,11 @@ core/dataset.py
 from __future__ import annotations
 
 import pandas as pd
-import numpy as np   
 from pathlib import Path
 from typing import Union, List, Optional, Dict
 
 from .EconDatavalidator import EconDataValidator
 from .EconStats import EconStats
-from .EconCalculator import EconCalculator
 
 class EconDataset:
     """
@@ -55,7 +53,6 @@ class EconDataset:
         EconDataValidator.validate(self._df)
 
         self._stats = {col: EconStats(self._df[[col]]) for col in self._df.columns}
-        self._calculator = EconCalculator(self)
     # ------------------------------------------------------------------
     # 내부 준비
     # ------------------------------------------------------------------
@@ -97,11 +94,7 @@ class EconDataset:
     @property
     def shape(self):
         return self._df.shape
-
-    @property
-    def calculator(self) -> EconCalculator:
-        return self._calculator
-
+    
     @property
     def stats(self) -> Dict[str, EconStats]:
         return self._stats
@@ -171,5 +164,4 @@ class EconDataset:
         new_ds._df = new_df
         new_ds._freq = self._freq
         new_ds._stats = {col: EconStats(new_df[col]) for col in new_df.columns}
-        new_ds._calculator = EconCalculator(new_ds)
         return new_ds

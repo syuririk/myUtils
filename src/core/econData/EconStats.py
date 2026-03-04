@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import pandas as pd
-import numpy as np
-from typing import Optional
 from scipy import stats
 
 
@@ -17,6 +15,8 @@ class EconStats:
             self._df = data
             self._series = data.iloc[:, 0] if len(data.columns) > 0 else None
 
+    def __repr__(self):
+        return str(self.summary())
     # ------------------------------------------------------------------
     # 통계 함수
     # ------------------------------------------------------------------
@@ -44,7 +44,7 @@ class EconStats:
             "skewness":          float(stats.skew(data_to_summarize.dropna())),
             "kurtosis":          float(stats.kurtosis(data_to_summarize.dropna())),
             "quantile":          self.quantile(col),
-            "stationarity_test": self.stationarity_test(),
+            # "stationarity_test": self.stationarity_test(),
         }
 
     # ------------------------------------------------------------------

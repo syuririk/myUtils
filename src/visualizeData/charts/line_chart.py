@@ -5,15 +5,13 @@ Plotly 기반 라인 차트 — 추세선, YoY/QoQ 변화율, 예측, 시계열 
 
 from __future__ import annotations
 
-import pandas as pd
-import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from typing import List, Optional
 
 from visualizeData.charts.base_chart import BaseChart
 from core.econData.EconDataset import EconDataset
-from analyzeData.forecaster import ForecastResult
+from analyzeData.analysis.forecaster import ForecastResult
 
 
 class LineChart(BaseChart):
