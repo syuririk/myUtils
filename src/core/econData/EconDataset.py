@@ -64,6 +64,7 @@ class EconDataset:
             out = out.set_index(date_col)
         elif not isinstance(out.index, pd.DatetimeIndex):
             out.index = pd.to_datetime(out.index)
+        out = out.apply(pd.to_numeric, errors='coerce')
         out = out.select_dtypes(include="number")
         return out.sort_index()
 
