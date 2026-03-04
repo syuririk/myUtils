@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from typing import List, Optional
 
-from visualizeData.base_chart import BaseChart
+from visualizeData.charts.base_chart import BaseChart
 from core.econData.EconDataset import EconDataset
 
 

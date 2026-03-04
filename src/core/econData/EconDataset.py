@@ -123,6 +123,9 @@ class EconDataset:
         return self._df[key]
 
     def __repr__(self) -> str:
+        pd.set_option('display.expand_frame_repr', False)
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.width', 1000)
         return self._df.__repr__()
     # ------------------------------------------------------------------
     # 필터링

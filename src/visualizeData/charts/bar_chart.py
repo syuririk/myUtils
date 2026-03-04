@@ -10,7 +10,7 @@ import numpy as np
 import plotly.graph_objects as go
 from typing import List, Optional, Tuple
 
-from visualizeData.base_chart import BaseChart
+from visualizeData.charts.base_chart import BaseChart
 from core.econData.EconDataset import EconDataset
 
 
