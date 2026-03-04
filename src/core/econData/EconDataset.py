@@ -54,9 +54,7 @@ class EconDataset:
 
         EconDataValidator.validate(self._df)
 
-        self._stats: Dict[str, EconStats] = {
-            col: EconStats(self._df[col]) for col in self._df.columns
-        }
+        self._stats = EconStats(self._df)
 
         self._calculator = EconCalculator(self)
     # ------------------------------------------------------------------
@@ -113,18 +111,20 @@ class EconDataset:
     # 접근
     # ------------------------------------------------------------------
 
-    def __getitem__(self, key: str) -> pd.Series:
+    def __getitem__(self, key: Union[str, list]) -> pd.Series:
+        if isinstance(key, list):
+            missing = [k for k in key if k not in self._df.columns]
+            dfs = [self._df[k] for k in key]
+            if missing:
+                raise KeyError(f"'{missing}' 지표 없음. 가능한 지표: {self.indicators}")
+            return pd.concat(dfs, axis=1)
+        
         if key not in self._df.columns:
             raise KeyError(f"'{key}' 지표 없음. 가능한 지표: {self.indicators}")
         return self._df[key]
 
-    def __repr__(self) -> str:
-        return (
-            f"EconDataset(name='{self.name}', "
-            f"기간={self.start.date()}~{self.end.date()}, "
-            f"지표수={len(self.indicators)}, freq='{self.freq}')"
-        )
-
+    def __repr__(self) -> pd.DataFrame:
+        return self._df
     # ------------------------------------------------------------------
     # 필터링
     # ------------------------------------------------------------------

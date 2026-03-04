@@ -9,8 +9,8 @@ from scipy import stats
 
 class EconStats:
 
-    def __init__(self, series: pd.Series):
-        self._series = series
+    def __init__(self, df: pd.DataFrame):
+        self._df = df
 
     # ------------------------------------------------------------------
     # 통계 함수
@@ -19,17 +19,17 @@ class EconStats:
     def summary(self, col: str) -> dict:
         return {
             "name":              col,
-            "start":             self._series.index.min(),
-            "end":               self._series.index.max(),
-            "n":                 len(self._series),
-            "mean":              self._series.mean(),
-            "std":               self._series.std(),
-            "min":               self._series.min(),
-            "max":               self._series.max(),
-            "latest":            self._series.iloc[-1],
-            "skewness":          float(stats.skew(self._series.dropna())),
-            "kurtosis":          float(stats.kurtosis(self._series.dropna())),
-            "quantile":          self.quantile(),
+            "start":             self._df.index.min(),
+            "end":               self._df.index.max(),
+            "n":                 len(self._df[col]),
+            "mean":              self._df[col].mean(),
+            "std":               self._df[col].std(),
+            "min":               self._df[col].min(),
+            "max":               self._df[col].max(),
+            "latest":            self._df[col].iloc[-1],
+            "skewness":          float(stats.skew(self._df[col].dropna())),
+            "kurtosis":          float(stats.kurtosis(self._df[col].dropna())),
+            "quantile":          self.quantile(col),
             # "stationarity_test": self.stationarity_test(),
         }
 
