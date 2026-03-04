@@ -54,8 +54,7 @@ class EconDataset:
 
         EconDataValidator.validate(self._df)
 
-        self._stats = EconStats(self._df)
-
+        self._stats = {col: EconStats(self._df[[col]]) for col in self._df.columns}
         self._calculator = EconCalculator(self)
     # ------------------------------------------------------------------
     # 내부 준비

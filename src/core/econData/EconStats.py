@@ -9,28 +9,42 @@ from scipy import stats
 
 class EconStats:
 
-    def __init__(self, df: pd.DataFrame):
-        self._df = df
+    def __init__(self, data):
+        if isinstance(data, pd.Series):
+            self._series = data
+            self._df = None
+        else:
+            self._df = data
+            self._series = data.iloc[:, 0] if len(data.columns) > 0 else None
 
     # ------------------------------------------------------------------
     # 통계 함수
     # ------------------------------------------------------------------
 
-    def summary(self, col: str) -> dict:
+    def summary(self, col: str = None) -> dict:
+        if self._series is not None:
+            data_to_summarize = self._series
+            col_name = col or data_to_summarize.name or "value"
+        else:
+            if col is None:
+                raise ValueError("col parameter required when EconStats initialized with DataFrame")
+            data_to_summarize = self._df[col]
+            col_name = col
+            
         return {
-            "name":              col,
-            "start":             self._df.index.min(),
-            "end":               self._df.index.max(),
-            "n":                 len(self._df[col]),
-            "mean":              self._df[col].mean(),
-            "std":               self._df[col].std(),
-            "min":               self._df[col].min(),
-            "max":               self._df[col].max(),
-            "latest":            self._df[col].iloc[-1],
-            "skewness":          float(stats.skew(self._df[col].dropna())),
-            "kurtosis":          float(stats.kurtosis(self._df[col].dropna())),
+            "name":              col_name,
+            "start":             data_to_summarize.index.min(),
+            "end":               data_to_summarize.index.max(),
+            "n":                 len(data_to_summarize),
+            "mean":              data_to_summarize.mean(),
+            "std":               data_to_summarize.std(),
+            "min":               data_to_summarize.min(),
+            "max":               data_to_summarize.max(),
+            "latest":            data_to_summarize.iloc[-1],
+            "skewness":          float(stats.skew(data_to_summarize.dropna())),
+            "kurtosis":          float(stats.kurtosis(data_to_summarize.dropna())),
             "quantile":          self.quantile(col),
-            # "stationarity_test": self.stationarity_test(),
+            "stationarity_test": self.stationarity_test(),
         }
 
     # ------------------------------------------------------------------
@@ -40,7 +54,14 @@ class EconStats:
     def quantile(self, q: list[float] | float = None) -> dict | float:
         if q is None:
             q = [0.25, 0.5, 0.75]
-        result = self._series.quantile(q)
+        
+        # Use series if available, otherwise access the column from dataframe
+        if self._series is not None:
+            result = self._series.quantile(q)
+        else:
+            # This shouldn't be called when initialized with DataFrame without col context
+            raise ValueError("quantile() requires Series data or col context")
+            
         if isinstance(q, list):
             return result.to_dict()
         else:
