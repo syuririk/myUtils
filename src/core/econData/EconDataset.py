@@ -120,6 +120,21 @@ class EconDataset:
         pd.set_option('display.max_columns', None)
         pd.set_option('display.width', 1000)
         return self._df.__repr__()
+
+    # ------------------------------------------------------------------
+    # 연산자 오버로딩
+    # ------------------------------------------------------------------
+
+    def __add__(self, other: Union["EconDataset", pd.DataFrame]) -> "EconDataset":
+        """+ 연산자: 데이터셋 병합 (pd.concat axis=1)."""
+        if isinstance(other, EconDataset):
+            merged_df = pd.concat([self._df, other._df], axis=1)
+        elif isinstance(other, pd.DataFrame):
+            merged_df = pd.concat([self._df, other], axis=1)
+        else:
+            return NotImplemented
+        
+        return self._clone_with(merged_df)
     # ------------------------------------------------------------------
     # 필터링
     # ------------------------------------------------------------------
