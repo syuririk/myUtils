@@ -33,8 +33,8 @@ class BaseChart:
         title: str = "",
         xaxis_title: str = "",
         yaxis_title: str = "",
-        width: int = None,
-        height: int = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
     ) -> dict:
         return dict(
             title=dict(text=title, font=dict(size=16, color="#1e293b"), x=0.02),

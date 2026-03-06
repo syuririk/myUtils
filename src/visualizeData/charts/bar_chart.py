@@ -29,9 +29,13 @@ class BarChart(BaseChart):
         indicator: str,
         periods: int = 4,
         title: Optional[str] = None,
+        resample_freq: Optional[str] = None,
     ) -> go.Figure:
         """단일 지표 YoY 변화율 바 차트 (양수=파랑, 음수=빨강)."""
-        yoy    = self.dataset.pct_change(periods)[indicator] * 100
+        df = self._df[[indicator]].copy()
+        if resample_freq:
+            df = df.resample(resample_freq).mean()
+        yoy    = df.pct_change(periods)[indicator] * 100
         colors = [self.palette[0] if v >= 0 else self.palette[1] for v in yoy]
 
         fig = go.Figure(go.Bar(
@@ -54,9 +58,13 @@ class BarChart(BaseChart):
         indicators: Optional[List[str]] = None,
         periods: int = 4,
         title: str = "지표별 YoY 변화율 비교",
+        resample_freq: Optional[str] = None,
     ) -> go.Figure:
         cols = indicators or self.dataset.indicators
-        yoy  = self._df[cols].pct_change(periods) * 100
+        df = self._df[cols].copy()
+        if resample_freq:
+            df = df.resample(resample_freq).mean()
+        yoy  = df.pct_change(periods) * 100
 
         fig = go.Figure()
         for i, col in enumerate(cols):

@@ -66,6 +66,7 @@ class EconDataset:
             out.index = pd.to_datetime(out.index)
         out = out.apply(pd.to_numeric, errors='coerce')
         out = out.select_dtypes(include="number")
+        out = out.dropna(axis=0, how='all')
         return out.sort_index()
 
     # ------------------------------------------------------------------

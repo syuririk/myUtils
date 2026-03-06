@@ -45,10 +45,13 @@ class LineChart(BaseChart):
         title: str = "경제지표 추이",
         normalize: bool = False,
         ma_window: Optional[int] = None,
+        resample_freq: Optional[str] = None,
     ) -> go.Figure:
         """여러 지표 동시 라인 플롯."""
         cols = indicators or self.dataset.indicators
         df = self._df[cols].copy()
+        if resample_freq:
+            df = df.resample(resample_freq).mean()
         if normalize:
             df = (df - df.iloc[0]) / df.iloc[0] * 100
 
@@ -82,9 +85,13 @@ class LineChart(BaseChart):
         indicators: Optional[List[str]] = None,
         periods: int = 4,
         title: str = "전년 동기 대비 변화율 (%)",
+        resample_freq: Optional[str] = None,
     ) -> go.Figure:
         cols = indicators or self.dataset.indicators
-        yoy = self._df[cols].pct_change(periods=periods) * 100
+        df = self._df[cols].copy()
+        if resample_freq:
+            df = df.resample(resample_freq).mean()
+        yoy = df.pct_change(periods=periods) * 100
 
         fig = go.Figure()
         fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8")
@@ -105,9 +112,13 @@ class LineChart(BaseChart):
         self,
         indicators: Optional[List[str]] = None,
         title: str = "전분기 대비 변화율 (%)",
+        resample_freq: Optional[str] = None,
     ) -> go.Figure:
         cols = indicators or self.dataset.indicators
-        qoq = self._df[cols].pct_change(periods=1) * 100
+        df = self._df[cols].copy()
+        if resample_freq:
+            df = df.resample(resample_freq).mean()
+        qoq = df.pct_change(periods=1) * 100
 
         fig = go.Figure()
         fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8")

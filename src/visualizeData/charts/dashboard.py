@@ -26,6 +26,7 @@ class Dashboard(BaseChart):
         self,
         indicators: Optional[List[str]] = None,
         title: str = "경제지표 종합 개요",
+        resample_freq: Optional[str] = None,
     ) -> go.Figure:
         """
         Row 1 : 지수 레벨 추이
@@ -33,8 +34,11 @@ class Dashboard(BaseChart):
         Row 3 : 이동 변동성 (4기 rolling std)
         """
         cols = indicators or self.dataset.indicators
-        yoy  = self._df[cols].pct_change(4) * 100
-        vol  = self._df[cols].rolling(4).std()
+        df = self._df[cols].copy()
+        if resample_freq:
+            df = df.resample(resample_freq).mean()
+        yoy  = df.pct_change(4) * 100
+        vol  = df.rolling(4).std()
 
         fig = make_subplots(
             rows=3, cols=1, shared_xaxes=True,
@@ -45,7 +49,7 @@ class Dashboard(BaseChart):
         for i, col in enumerate(cols):
             color = self.palette[i % len(self.palette)]
             fig.add_trace(go.Scatter(
-                x=self._df.index, y=self._df[col], name=col, mode="lines",
+                x=df.index, y=df[col], name=col, mode="lines",
                 line=dict(color=color, width=2),
                 legendgroup=col,
                 hovertemplate=f"<b>{col}</b><br>%{{x|%Y-%m}}: %{{y:.2f}}<extra></extra>",
@@ -63,7 +67,7 @@ class Dashboard(BaseChart):
                 hovertemplate=f"<b>{col}</b><br>%{{x|%Y-%m}}: %{{y:.3f}}<extra></extra>",
             ), row=3, col=1)
 
-        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=2, col=1)
+        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=2, col=1)  # type: ignore
         fig.update_layout(
             title=dict(text=title, font=dict(size=16, color="#1e293b"), x=0.02),
             height=self.height * 2, width=self.width,
@@ -128,8 +132,8 @@ class Dashboard(BaseChart):
             hovertemplate="Rolling corr<br>%{x|%Y-%m}: %{y:.3f}<extra></extra>",
         ), row=2, col=2)
 
-        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=2, col=1)
-        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=2, col=2)
+        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=2, col=1)  # type: ignore
+        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=2, col=2)  # type: ignore
         fig.update_layout(
             title=dict(
                 text=title or f"{indicator_a} vs {indicator_b}",
@@ -189,8 +193,8 @@ class Dashboard(BaseChart):
             hovertemplate="lag=%{x}<br>상관계수: %{y:.3f}<extra></extra>",
         ), row=1, col=2)
 
-        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=1, col=1)
-        fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=1, col=2)
+        fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=1, col=1)  # type: ignore
+        fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=1, col=2)  # type: ignore
         fig.update_layout(
             title=dict(
                 text=title or f"{indicator_a} ↔ {indicator_b} 리드-래그 분석",

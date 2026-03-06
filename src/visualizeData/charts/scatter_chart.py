@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from visualizeData.charts.base_chart import BaseChart
 from core.econData.EconDataset import EconDataset
@@ -44,6 +44,7 @@ class ScatterChart(BaseChart):
         color: Optional[str] = None,
         title: Optional[str] = None,
         add_trend: bool = False,
+        resample_freq: Optional[str] = None,
     ) -> go.Figure:
         """지정한 두 지표의 산점도.
 
@@ -59,8 +60,14 @@ class ScatterChart(BaseChart):
             그래프 제목
         add_trend : bool
             True면 최소제곱 선형회귀 추세선을 함께 그림
+        resample_freq : Optional[str]
+            리샘플 빈도 (예: 'M' for monthly)
         """
-        df = self._df[[x, y] + ([color] if color else [])].dropna()
+        df = self._df[[x, y] + ([color] if color else [])].copy()
+        if resample_freq:
+            df = df.resample(resample_freq).mean()
+        df.index = cast(pd.DatetimeIndex, df.index)  # Ensure DatetimeIndex
+        df = df.dropna()
         fig = go.Figure()
         marker_kwargs = {}
         if color:
@@ -74,7 +81,7 @@ class ScatterChart(BaseChart):
         fig.add_trace(go.Scatter(
             x=df[x], y=df[y], mode="markers", marker=marker_kwargs,
             hovertemplate=f"<b>%{{text}}</b><br>{x}: %{{x:.2f}}<br>{y}: %{{y:.2f}}<extra></extra>",
-            text=df.index.strftime("%Y-%m"),
+            text=df.index.strftime("%Y-%m"),  # type: ignore
         ))
 
         if add_trend and len(df) >= 2:

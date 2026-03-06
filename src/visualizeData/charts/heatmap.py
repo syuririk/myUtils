@@ -8,7 +8,7 @@ from __future__ import annotations
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
-from typing import Optional, List
+from typing import Optional, List, Literal, cast
 
 from visualizeData.charts.base_chart import BaseChart
 from core.econData.EconDataset import EconDataset
@@ -27,7 +27,7 @@ class HeatmapChart(BaseChart):
         method: str = "pearson",
         title: str = "지표 간 상관관계",
     ) -> go.Figure:
-        corr   = self._df.corr(method=method).round(3)
+        corr   = self._df.corr(method=method).round(3)  # type: ignore
         labels = corr.columns.tolist()
         h      = max(400, len(labels) * 80)
 
@@ -53,8 +53,9 @@ class HeatmapChart(BaseChart):
         """연도 × 분기 YoY 변화율(%) 히트맵."""
         s   = self._df[indicator].dropna()
         yoy = self.dataset.pct_change(4)[indicator] * 100
+        yoy.index = cast(pd.DatetimeIndex, yoy.index)
         pivot = (
-            pd.DataFrame({"value": yoy, "year": yoy.index.year, "quarter": yoy.index.quarter})
+            pd.DataFrame({"value": yoy, "year": yoy.index.year, "quarter": yoy.index.quarter})  # type: ignore
             .pivot(index="year", columns="quarter", values="value")
         )
         pivot.columns = [f"Q{q}" for q in pivot.columns]
@@ -87,13 +88,14 @@ class HeatmapChart(BaseChart):
         title: str = "지표별 YoY 변화율 히트맵",
     ) -> go.Figure:
         yoy  = self.dataset.pct_change(periods) * 100
+        yoy.index = cast(pd.DatetimeIndex, yoy.index)
         z    = yoy.T.values.round(2)
         text = [[f"{v:.1f}%" if not np.isnan(v) else "" for v in row] for row in z]
         h    = max(300, len(yoy.columns) * 60)
 
         fig = go.Figure(go.Heatmap(
             z=z,
-            x=yoy.index.strftime("%Y-%m").tolist(),
+            x=yoy.index.strftime("%Y-%m").tolist(),  # type: ignore
             y=yoy.columns.tolist(),
             colorscale="RdYlGn", zmid=0,
             text=text, texttemplate="%{text}", textfont=dict(size=9),
@@ -121,6 +123,7 @@ class HeatmapChart(BaseChart):
     ) -> go.Figure:
         """다양한 window 크기에 따른 두 지표 간 이동 상관계수 히트맵."""
         windows = windows or [2, 3, 4, 6, 8]
+        self._df.index = cast(pd.DatetimeIndex, self._df.index)
         z = [
             self._df[indicator_a].rolling(w).corr(self._df[indicator_b]).round(3).values
             for w in windows
@@ -129,7 +132,7 @@ class HeatmapChart(BaseChart):
 
         fig = go.Figure(go.Heatmap(
             z=z,
-            x=self._df.index.strftime("%Y-%m").tolist(),
+            x=self._df.index.strftime("%Y-%m").tolist(),  # type: ignore
             y=[f"window={w}" for w in windows],
             colorscale="RdYlGn", zmid=0, zmin=-1, zmax=1,
             hovertemplate="%{y}<br>%{x}<br>상관계수: %{z:.3f}<extra></extra>",
