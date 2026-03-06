@@ -115,7 +115,7 @@ class DataTransformer:
         columns: 처리할 컬럼 목록. None이면 전체.
         """
         cols = self._check_columns(columns)
-        res = self._df[cols].diff(periods)
+        res = self.dataset.diff(periods)[cols]
         for col in res.columns:
             new_col = f"{col}_diff{periods}"
             self._df[new_col] = res[col].astype("float32")
@@ -131,7 +131,7 @@ class DataTransformer:
         columns: 처리할 컬럼 목록. None이면 전체.
         """
         cols = self._check_columns(columns)
-        res = self._df[cols].pct_change(periods) * 100
+        res = self.dataset.pct_change(periods)[cols] * 100
         for col in res.columns:
             new_col = f"{col}_pct{periods}"
             self._df[new_col] = res[col].astype("float32")

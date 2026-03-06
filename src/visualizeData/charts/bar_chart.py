@@ -15,20 +15,6 @@ from core.econData.EconDataset import EconDataset
 
 
 class BarChart(BaseChart):
-    """
-    Plotly 기반 바 차트 모음.
-
-    Examples
-    --------
-    >>> bc = BarChart(ds)
-    >>> fig = bc.yoy_bar('총지수')
-    >>> fig = bc.grouped_bar(['총지수', '식료품'])
-    >>> fig = bc.period_compare_bar(('2020','2022'), ('2022','2024'))
-    >>> fig = bc.contribution_bar()
-    >>> fig = bc.rank_bar()
-    >>> fig.show()
-    """
-
     def __init__(self, dataset: EconDataset, **kwargs):
         super().__init__(**kwargs)
         self.dataset = dataset
@@ -45,7 +31,7 @@ class BarChart(BaseChart):
         title: Optional[str] = None,
     ) -> go.Figure:
         """단일 지표 YoY 변화율 바 차트 (양수=파랑, 음수=빨강)."""
-        yoy    = self._df[indicator].pct_change(periods) * 100
+        yoy    = self.dataset.pct_change(periods)[indicator] * 100
         colors = [self.palette[0] if v >= 0 else self.palette[1] for v in yoy]
 
         fig = go.Figure(go.Bar(

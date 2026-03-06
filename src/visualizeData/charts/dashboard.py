@@ -16,27 +16,11 @@ from core.econData.EconDataset import EconDataset
 
 
 class Dashboard(BaseChart):
-    """
-    대화형 Plotly 대시보드.
-
-    Examples
-    --------
-    >>> db = Dashboard(ds)
-    >>> fig = db.overview()
-    >>> fig = db.compare_panel('총지수', '식료품')
-    >>> fig = db.lead_lag_panel('총지수', '식료품')
-    >>> fig.show()
-    >>> db.save_html(fig, 'dashboard.html')
-    """
-
     def __init__(self, dataset: EconDataset, **kwargs):
         super().__init__(**kwargs)
         self.dataset = dataset
         self._df = dataset.df
 
-    # ------------------------------------------------------------------
-    # 전체 개요 (3행)
-    # ------------------------------------------------------------------
 
     def overview(
         self,
@@ -102,8 +86,8 @@ class Dashboard(BaseChart):
         title: Optional[str] = None,
     ) -> go.Figure:
         """
-        (1,1) 레벨 비교      (1,2) 누적 변화율 비교
-        (2,1) YoY 비교       (2,2) Rolling 상관계수 (4기)
+        (1,1) Level      (1,2) cmul
+        (2,1) YoY        (2,2) Rolling corr
         """
         df   = self._df[[indicator_a, indicator_b]]
         yoy  = df.pct_change(4) * 100
@@ -114,8 +98,8 @@ class Dashboard(BaseChart):
         fig = make_subplots(
             rows=2, cols=2,
             subplot_titles=[
-                "지수 레벨", "기준 시점 대비 누적 변화율 (%)",
-                "YoY 변화율 (%)", "Rolling 상관계수 (4기)",
+                "Level", "cuml (%)",
+                "YoY", "Rolling corr",
             ],
             vertical_spacing=0.14, horizontal_spacing=0.1,
         )
@@ -137,18 +121,18 @@ class Dashboard(BaseChart):
             ), row=1, col=2)
 
         fig.add_trace(go.Scatter(
-            x=rc.index, y=rc, name="Rolling 상관계수", mode="lines",
+            x=rc.index, y=rc, name="Rolling corr", mode="lines",
             line=dict(color=self.palette[2], width=2),
             fill="tozeroy", fillcolor="rgba(37,99,235,0.08)",
             showlegend=False,
-            hovertemplate="Rolling 상관계수<br>%{x|%Y-%m}: %{y:.3f}<extra></extra>",
+            hovertemplate="Rolling corr<br>%{x|%Y-%m}: %{y:.3f}<extra></extra>",
         ), row=2, col=2)
 
         fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=2, col=1)
         fig.add_hline(y=0, line_width=1, line_dash="dash", line_color="#94a3b8", row=2, col=2)
         fig.update_layout(
             title=dict(
-                text=title or f"{indicator_a} vs {indicator_b} 비교 분석",
+                text=title or f"{indicator_a} vs {indicator_b}",
                 font=dict(size=16, color="#1e293b"), x=0.02,
             ),
             height=self.height * 2, width=self.width,
@@ -159,10 +143,6 @@ class Dashboard(BaseChart):
             margin=dict(l=60, r=40, t=100, b=60),
         )
         return fig
-
-    # ------------------------------------------------------------------
-    # 리드-래그 패널 (1×2)
-    # ------------------------------------------------------------------
 
     def lead_lag_panel(
         self,

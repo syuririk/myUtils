@@ -31,7 +31,7 @@ class EconDataset:
 
     Examples
     --------
-    >>> ds = EconDataset(df, date_col='date', name='소비자물가지수')
+    >>> ds = EconDataset(df, date_col='date')
     >>> ds.indicators               # ['총지수', '식료품', ...]
     >>> ds['총지수']                # EconCalculator 객체 반환
     >>> ds.slice('2020', '2022')   # 기간 필터 → 새 EconDataset
@@ -41,14 +41,14 @@ class EconDataset:
     def __init__(
         self,
         df: pd.DataFrame,
-        name: str = "EconDataset",
         date_col: Optional[str] = 'date',
-        freq: Optional[str] = None
     ):
-        self.name = name
+        # 기본적인 데이터 준비만 수행
         self._raw = df.copy()
         self._df = self._prepare(df, date_col)
-        self._freq = freq or pd.infer_freq(self._df.index) or "QS"
+        self._df_full = self._df.copy().reindex(
+            pd.date_range(self._df.index.min(), self._df.index.max())
+        )
 
         EconDataValidator.validate(self._df)
 
@@ -79,10 +79,6 @@ class EconDataset:
     @property
     def indicators(self) -> List[str]: 
         return list(self._df.columns)
-
-    @property
-    def freq(self) -> str:
-        return self._freq
 
     @property
     def start(self) -> pd.Timestamp:
@@ -156,6 +152,37 @@ class EconDataset:
         """특정 지표만 선택한 새 EconDataset 반환."""
         return self._clone_with(self._df[indicators])
 
+    # ------------------------------------------------------------------
+    # 변화율 계산
+    # ------------------------------------------------------------------
+
+    def pct_change(self, periods: int = 1) -> pd.DataFrame:
+        """기간별 백분율 변화율 계산. self._df_full을 기준으로 계산 후 self._df 인덱스로 필터."""
+        pct = self._df_full.pct_change(periods)
+        return pct.loc[self._df.index]
+
+    def diff(self, periods: int = 1) -> pd.DataFrame:
+        """기간별 차이 계산. self._df_full을 기준으로 계산 후 self._df 인덱스로 필터."""
+        diff = self._df_full.diff(periods)
+        return diff.loc[self._df.index]
+
+    def rolling_std(self, window: int, offset: int = 1) -> pd.DataFrame:
+        """롤링 표준편차 계산. offset일 차이를 기준으로 window일 롤링. self._df_full 기준 계산 후 필터."""
+        diff = self._df_full.diff(offset)
+        rolling_std = diff.rolling(window).std()
+        return rolling_std.loc[self._df.index]
+
+    def mom(self) -> pd.DataFrame:
+        """Month-over-month 변화율 (%). _df_full 기준으로 30일 전 대비."""
+        return self.pct_change(30) * 100
+
+    def qoq(self) -> pd.DataFrame:
+        """Quarter-over-quarter 변화율 (%). _df_full 기준으로 90일 전 대비."""
+        return self.pct_change(90) * 100
+
+    def yoy(self) -> pd.DataFrame:
+        """Year-over-year 변화율 (%). _df_full 기준으로 365일 전 대비."""
+        return self.pct_change(365) * 100
 
     # ------------------------------------------------------------------
     # 팩토리
@@ -175,9 +202,10 @@ class EconDataset:
 
     def _clone_with(self, new_df: pd.DataFrame) -> "EconDataset":
         new_ds = object.__new__(EconDataset)
-        new_ds.name = self.name
         new_ds._raw = new_df
         new_ds._df = new_df
-        new_ds._freq = self._freq
+        new_ds._df_full = new_df.copy().reindex(
+            pd.date_range(new_df.index.min(), new_df.index.max())
+        )
         new_ds._stats = {col: EconStats(new_df[col]) for col in new_df.columns}
         return new_ds

@@ -132,8 +132,9 @@ class TimeSeriesAnalyzer:
     ) -> pd.DatetimeIndex:
         """Rolling std 기준 급변 시점 반환."""
         s = self._df[indicator].dropna()
-        diff = s.diff()
-        mask = diff.rolling(window).std().abs() > threshold_std * diff.std()
+        diff = self.dataset.diff(1)[indicator]
+        rolling_std_series = self.dataset.rolling_std(window, offset=1)[indicator]
+        mask = rolling_std_series.abs() > threshold_std * diff.std()
         return s.index[mask.fillna(False)]
 
     # ------------------------------------------------------------------

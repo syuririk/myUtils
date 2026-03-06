@@ -2,18 +2,16 @@ from visualizeData.charts.bar_chart import BarChart
 from visualizeData.charts.heatmap import HeatmapChart
 from visualizeData.charts.dashboard import Dashboard
 from visualizeData.charts.line_chart import LineChart
+from visualizeData.charts.scatter_chart import ScatterChart
 
 
 class Visualizer:
     """
-    편리한 차트 접근을 위한 래퍼 클래스.
-
     Parameters
     ----------
     dataset : EconDataset
-        시각화할 데이터셋.
     **kwargs
-        공통 차트 생성자에 전달되는 옵션 (theme, palette, width, height 등).
+        options (theme, palette, width, height etc.).
 
     Attributes
     ----------
@@ -21,13 +19,12 @@ class Visualizer:
     heatmap : HeatmapChart
     dashboard : Dashboard
     line : LineChart
+    scatter : ScatterChart
 
     Methods
     -------
-    overview(...)              # dashboard.overview 호출
-    correlation_heatmap(...)   # heatmap.correlation_heatmap 호출
-    yoy_bar(...)               # bar.yoy_bar 호출
-    ...                        # 내부 차트에 정의된 모든 메서드 자동 프록시
+    overview(...)              # dashboard.overview 
+    correlation_heatmap(...)   # heatmap.correlation_heatmap 
 
     Examples
     --------
@@ -35,6 +32,8 @@ class Visualizer:
     >>> vis = Visualizer(ds, theme='plotly_dark')
     >>> fig = vis.overview()                  # dashboard method
     >>> fig = vis.correlation_heatmap()       # heatmap method
+    >>> fig = vis.scatter.scatter('총지수','식료품')  # scatter method
+    >>> fig = vis.correlation_scatter('총지수','식료품')
     >>> fig = vis.yoy_bar('총지수')            # direct proxy to bar.yoy_bar
     >>> fig = vis.bar.yoy_bar('총지수')        # equivalent form
     """
@@ -47,8 +46,9 @@ class Visualizer:
         self.heatmap = HeatmapChart(dataset, **kwargs)
         self.dashboard = Dashboard(dataset, **kwargs)
         self.line = LineChart(dataset, **kwargs)
+        self.scatter = ScatterChart(dataset, **kwargs)
 
-        self._charts = [self.bar, self.heatmap, self.dashboard, self.line]
+        self._charts = [self.bar, self.heatmap, self.dashboard, self.line, self.scatter]
 
         for chart in self._charts:
             for attr_name in dir(chart):

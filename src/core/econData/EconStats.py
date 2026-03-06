@@ -2,7 +2,12 @@
 from __future__ import annotations
 
 import pandas as pd
-from scipy import stats
+
+# scipy may not be installed in minimal environments used for testing; fall back gracefully
+try:
+    from scipy import stats
+except ImportError:  # pragma: no cover
+    stats = None
 
 
 class EconStats:
@@ -21,7 +26,22 @@ class EconStats:
     # 통계 함수
     # ------------------------------------------------------------------
 
-    def summary(self, col: str = None) -> dict:
+    def summary(self, col: str = None) -> pd.DataFrame | dict:
+        """요약 통계.
+
+        * DataFrame으로 초기화된 경우 `col`을 지정하지 않으면
+          `DataFrame.describe().T` 결과에 왜도/첨도를 덧붙인
+          ``pd.DataFrame``을 반환합니다.
+        * Series 또는 단일 열에 대한 통계는 기존 사전 형태로 계속 반환됩니다.
+        """
+        # DataFrame 전체 요약 (col 미지정) ------------------------------------------------
+        if self._df is not None and col is None:
+            base = self._df.describe().T
+            base["skewness"] = self._df.skew()
+            base["kurtosis"] = self._df.kurt()
+            return base
+
+        # Series 또는 단일 열 요약 ------------------------------------------------------
         if self._series is not None:
             data_to_summarize = self._series
             col_name = col or data_to_summarize.name or "value"
@@ -30,7 +50,16 @@ class EconStats:
                 raise ValueError("col parameter required when EconStats initialized with DataFrame")
             data_to_summarize = self._df[col]
             col_name = col
-            
+
+        skew_val = (
+            float(stats.skew(data_to_summarize.dropna()))
+            if stats is not None else float(data_to_summarize.skew())
+        )
+        kurt_val = (
+            float(stats.kurtosis(data_to_summarize.dropna()))
+            if stats is not None else float(data_to_summarize.kurt())
+        )
+
         return {
             "name":              col_name,
             "start":             data_to_summarize.index.min(),
@@ -41,8 +70,8 @@ class EconStats:
             "min":               data_to_summarize.min(),
             "max":               data_to_summarize.max(),
             "latest":            data_to_summarize.iloc[-1],
-            "skewness":          float(stats.skew(data_to_summarize.dropna())),
-            "kurtosis":          float(stats.kurtosis(data_to_summarize.dropna())),
+            "skewness":          skew_val,
+            "kurtosis":          kurt_val,
             "quantile":          self.quantile(col),
             # "stationarity_test": self.stationarity_test(),
         }

@@ -1,28 +1,12 @@
-# myUtils
+#MyUtils
 
-# TODO
-fred
+kosis
 
-ecos
-
-krx
+koreaexim
 
 dart
 
 sec
 
 
-
-# queue
-fred - parseTime
-
-ecos
-
-krx - lazy
-
-process
-
-analize
-
-visualize
 

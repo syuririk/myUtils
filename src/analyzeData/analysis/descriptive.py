@@ -57,11 +57,11 @@ class DescriptiveAnalyzer:
 
     def yoy_table(self, periods: int = 4) -> pd.DataFrame:
         """전년 동기 대비 변화율(%) 테이블."""
-        return self._df.pct_change(periods=periods) * 100
+        return self.dataset.yoy()
 
     def qoq_table(self) -> pd.DataFrame:
         """전분기 대비 변화율(%) 테이블."""
-        return self._df.pct_change(periods=1) * 100
+        return self.dataset.qoq()
 
     def cumulative_table(self, base_period: Optional[str] = None) -> pd.DataFrame:
         """기준 시점 대비 누적 변화율(%) 테이블."""

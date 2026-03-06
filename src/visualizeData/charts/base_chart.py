@@ -10,16 +10,6 @@ from typing import Optional
 
 
 class BaseChart:
-    """
-    공통 Plotly 차트 설정 및 저장 유틸리티.
-
-    Parameters
-    ----------
-    theme   : plotly 테마. 'plotly_white' | 'plotly_dark' | 'ggplot2' | 'seaborn'
-    palette : 컬러 리스트 (hex)
-    width   : 차트 너비 (px)
-    height  : 차트 높이 (px)
-    """
 
     DEFAULT_PALETTE = [
         "#2563EB", "#DC2626", "#16A34A", "#D97706",
@@ -46,10 +36,6 @@ class BaseChart:
         width: int = None,
         height: int = None,
     ) -> dict:
-        """
-        공통 레이아웃 딕셔너리 반환.
-        width / height 를 직접 넘기면 인스턴스 기본값을 덮어쓴다.
-        """
         return dict(
             title=dict(text=title, font=dict(size=16, color="#1e293b"), x=0.02),
             xaxis=dict(title=xaxis_title, showgrid=True, gridcolor="#e2e8f0", zeroline=False),
@@ -72,15 +58,12 @@ class BaseChart:
         )
 
     def show(self, fig: go.Figure):
-        """차트를 브라우저에서 표시."""
         fig.show()
 
     def save_html(self, fig: go.Figure, path: str):
-        """HTML 파일로 저장 (인터랙티브 유지)."""
         fig.write_html(path)
         print(f"저장 완료 (HTML): {path}")
 
     def save_image(self, fig: go.Figure, path: str, scale: int = 2):
-        """정적 이미지로 저장 (PNG/SVG/PDF). kaleido 패키지 필요."""
         fig.write_image(path, scale=scale)
         print(f"저장 완료 (Image): {path}")

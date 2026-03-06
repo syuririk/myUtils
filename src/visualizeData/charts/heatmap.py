@@ -15,27 +15,12 @@ from core.econData.EconDataset import EconDataset
 
 
 class HeatmapChart(BaseChart):
-    """
-    Plotly 기반 히트맵 시각화.
-
-    Examples
-    --------
-    >>> hm = HeatmapChart(ds)
-    >>> fig = hm.correlation_heatmap()
-    >>> fig = hm.seasonal_heatmap('총지수')
-    >>> fig = hm.yoy_heatmap()
-    >>> fig = hm.rolling_corr_heatmap('총지수', '식료품및비주류음료')
-    >>> fig.show()
-    """
 
     def __init__(self, dataset: EconDataset, **kwargs):
         super().__init__(**kwargs)
         self.dataset = dataset
         self._df = dataset.df
 
-    # ------------------------------------------------------------------
-    # 상관관계 히트맵
-    # ------------------------------------------------------------------
 
     def correlation_heatmap(
         self,
@@ -59,9 +44,6 @@ class HeatmapChart(BaseChart):
         fig.update_xaxes(tickangle=30)
         return fig
 
-    # ------------------------------------------------------------------
-    # 계절성 히트맵 (연도 × 분기)
-    # ------------------------------------------------------------------
 
     def seasonal_heatmap(
         self,
@@ -70,7 +52,7 @@ class HeatmapChart(BaseChart):
     ) -> go.Figure:
         """연도 × 분기 YoY 변화율(%) 히트맵."""
         s   = self._df[indicator].dropna()
-        yoy = s.pct_change(4) * 100
+        yoy = self.dataset.pct_change(4)[indicator] * 100
         pivot = (
             pd.DataFrame({"value": yoy, "year": yoy.index.year, "quarter": yoy.index.quarter})
             .pivot(index="year", columns="quarter", values="value")
@@ -104,7 +86,7 @@ class HeatmapChart(BaseChart):
         periods: int = 4,
         title: str = "지표별 YoY 변화율 히트맵",
     ) -> go.Figure:
-        yoy  = self._df.pct_change(periods) * 100
+        yoy  = self.dataset.pct_change(periods) * 100
         z    = yoy.T.values.round(2)
         text = [[f"{v:.1f}%" if not np.isnan(v) else "" for v in row] for row in z]
         h    = max(300, len(yoy.columns) * 60)
